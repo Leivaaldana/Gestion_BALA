@@ -1,71 +1,149 @@
-.home-container {
-  min-height: 100vh;
-  background-color: #1e1e2f;
-  color: white;
+
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&family=Sora:wght@600;700&display=swap");
+
+/* ============================================
+   Variables de marca (no son variables de Bootstrap,
+   Bootstrap sigue usando su propia paleta para
+   clases que no tocamos acá, como .navbar-toggler-icon)
+   ============================================ */
+.home {
+  --midnight: #1c2e4a;
+  --dusty: #52677d;
+  --ivory: #bdc4d4;
+  --navy: #0f1a2b;
+  --buttercream: #d1cfc9;
+
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
+
+  font-family: var(--font-body);
 }
 
-.home-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 80px 20px 60px;
+/* ---------- Utilidades de color de marca ---------- */
+.home .bg-navy { background-color: var(--navy) !important; }
+.home .bg-buttercream { background-color: var(--buttercream) !important; }
+.home .text-ivory { color: var(--ivory) !important; }
+.home .text-dusty { color: var(--dusty) !important; }
+.home .text-midnight { color: var(--midnight) !important; }
+.home .text-navy-70 { color: var(--navy); opacity: 0.8; }
+
+/* ---------- Nav ---------- */
+.home .navbar-brand {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: #fff !important;
 }
 
-.home-title {
-  font-size: 2.8rem;
-  margin-bottom: 15px;
+.home .nav-link {
+  opacity: 0.85;
+}
+.home .nav-link:hover,
+.home .nav-link:focus-visible {
+  opacity: 1;
 }
 
-.home-subtitle {
-  font-size: 1.2rem;
-  color: #a0a0c0;
-  max-width: 500px;
-  margin-bottom: 30px;
+/* ---------- Botones de marca ---------- */
+.home .btn-dusty {
+  background-color: var(--dusty);
+  border-color: var(--dusty);
+  color: #fff;
+}
+.home .btn-dusty:hover,
+.home .btn-dusty:focus-visible {
+  background-color: #465a6f;
+  border-color: #465a6f;
+  color: #fff;
 }
 
-.home-cta {
-  padding: 12px 28px;
-  background-color: #6c63ff;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
+.home .btn-outline-ivory {
+  background-color: transparent;
+  border-color: rgba(189, 196, 212, 0.5);
+  color: var(--ivory);
+}
+.home .btn-outline-ivory:hover,
+.home .btn-outline-ivory:focus-visible {
+  background-color: rgba(189, 196, 212, 0.12);
+  border-color: var(--ivory);
+  color: #fff;
 }
 
-.home-cta:hover {
-  background-color: #574fd6;
+.home .hero {
+  background: linear-gradient(180deg, var(--midnight) 0%, var(--navy) 100%);
+  color: var(--ivory);
 }
 
-.home-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 0 20px 60px;
+.home .hero-eyebrow {
+  font-weight: 500;
+  color: var(--dusty);
+  background: rgba(189, 196, 212, 0.12);
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
 }
 
-.home-card {
-  background-color: #292945;
-  border-radius: 10px;
-  padding: 25px;
-  width: 260px;
-  text-align: center;
+.home .hero-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  line-height: 1.1;
+  color: #fff;
 }
 
-.home-card-icon {
-  font-size: 2rem;
-  margin-bottom: 10px;
+.home .hero-sub {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ivory);
+  max-width: 42ch;
 }
 
-.home-card-title {
-  font-size: 1.2rem;
-  margin-bottom: 8px;
+.home .hero-art {
+  width: 100%;
+  max-width: 360px;
 }
 
-.home-card-text {
-  color: #a0a0c0;
-  font-size: 0.9rem;
+.home .art-ring {
+  fill: none;
+  stroke: rgba(189, 196, 212, 0.18);
+  stroke-width: 1.5;
+}
+.home .art-panel {
+  fill: rgba(189, 196, 212, 0.08);
+  stroke: rgba(189, 196, 212, 0.35);
+}
+.home .art-cross {
+  stroke: var(--dusty);
+}
+.home .art-line {
+  fill: rgba(189, 196, 212, 0.4);
+}
+
+/* ---------- Pilares ---------- */
+.home .pillar-border {
+  border-left: 2px solid rgba(15, 26, 43, 0.12);
+  padding-left: 1.75rem;
+}
+
+.home .pillar-label {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--dusty);
+}
+
+.home h2.text-midnight {
+  font-family: var(--font-display);
+}
+
+@media (max-width: 767.98px) {
+  .home .pillar-border {
+    border-left: none;
+    padding-left: 0;
+    border-top: 2px solid rgba(15, 26, 43, 0.12);
+    padding-top: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home * {
+    transition: none !important;
+  }
 }
