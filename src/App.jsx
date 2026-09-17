@@ -5,13 +5,13 @@ import heroImg from './assets/hero.png'
 import './App.css'
 import Home from './paginas/Principal.jsx'
 import Header from './Components/header.jsx'
+import { Route } from 'react-router-dom'
 
 function App() {
   return (
-    <div className="app">
-      <Header />
-      <Home />
-    </div>
+    <Routes>
+      <Route path="/" element={<Principal />} />
+    </Routes>
   )
 }
 
