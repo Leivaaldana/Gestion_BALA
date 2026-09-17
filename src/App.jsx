@@ -3,15 +3,14 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import Home from './paginas/Principal.jsx'
-import Header from './Components/header.jsx'
+import Principal from './paginas/Principal.jsx'
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="app">
-      <Header />
-      <Home />
-    </div>
+    <Routes>
+      <Route path="/" element={<Principal />} />
+    </Routes>
   )
 }
 
