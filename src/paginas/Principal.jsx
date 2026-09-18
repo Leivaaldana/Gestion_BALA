@@ -1,7 +1,7 @@
 import "../estilos/Principal.css";
 import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function Principal() {
   const [scrolled, setScrolled] = useState(false);
  
   useEffect(() => {
@@ -84,10 +84,10 @@ export default function Home() {
                 personal administrativo.
               </p>
               <div className="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap">
-                <a className="btn btn-dusty btn-lg" href="/login">
+                <a className="btn btn-dusty btn-lg BotonP" href="/login">
                   Reservar un turno
                 </a>
-                <a className="btn btn-outline-ivory btn-lg" href="/equipo">
+                <a className="btn btn-outline-ivory btn-lg BotonP" href="/equipo">
                   Conocé al equipo
                 </a>
               </div>
