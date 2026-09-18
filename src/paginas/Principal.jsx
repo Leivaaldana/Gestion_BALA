@@ -1,9 +1,23 @@
 import "../estilos/Principal.css";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [scrolled, setScrolled] = useState(false);
+ 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+ 
   return (
     <div className="home">
-      <nav className="navbar navbar-expand-lg navbar-dark bg-navy py-3">
+      <nav
+        className={`navbar navbar-expand-lg navbar-dark py-3 home-nav ${
+          scrolled ? "home-nav--scrolled" : ""
+        }`}
+      >
         <div className="container">
           <a className="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
             <svg
@@ -18,7 +32,7 @@ export default function Home() {
             </svg>
             B.A.L.A
           </a>
-
+ 
           <button
             className="navbar-toggler"
             type="button"
@@ -30,7 +44,7 @@ export default function Home() {
           >
             <span className="navbar-toggler-icon" />
           </button>
-
+ 
           <div className="collapse navbar-collapse" id="homeNav">
             <ul className="navbar-nav mx-auto gap-lg-4 mt-3 mt-lg-0">
               <li className="nav-item">
@@ -46,7 +60,7 @@ export default function Home() {
                 <a className="nav-link text-ivory" href="/contacto">Contacto</a>
               </li>
             </ul>
-
+ 
             <div className="d-flex gap-2 mt-3 mt-lg-0">
               <a className="btn btn-outline-ivory" href="/registro">Registrarse</a>
               <a className="btn btn-dusty" href="/login">Iniciar sesión</a>
@@ -54,14 +68,11 @@ export default function Home() {
           </div>
         </div>
       </nav>
-
+ 
       <section className="hero py-5">
         <div className="container py-lg-5">
           <div className="row align-items-center g-5">
             <div className="col-lg-6 text-center text-lg-start">
-              <span className="hero-eyebrow d-inline-block mb-3">
-                Ecosistema de hospital
-              </span>
               <h1 className="hero-title mb-4">
                 Toda la clínica,
                 <br />
@@ -81,7 +92,7 @@ export default function Home() {
                 </a>
               </div>
             </div>
-
+ 
             <div className="col-lg-6">
               <svg viewBox="0 0 420 420" className="hero-art mx-auto d-block" aria-hidden="true">
                 <circle cx="210" cy="210" r="200" className="art-ring" />
@@ -99,7 +110,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+ 
       <section className="py-5 bg-buttercream">
         <div className="container py-4">
           <div className="row row-cols-1 row-cols-md-3 g-4">
@@ -113,7 +124,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-
+ 
             <div className="col">
               <div className="pillar h-100 pillar-border">
                 <span className="pillar-label">Historial</span>
@@ -126,7 +137,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-
+ 
             <div className="col">
               <div className="pillar h-100 pillar-border">
                 <span className="pillar-label">Tiempo real</span>
@@ -142,13 +153,12 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+ 
       <footer className="bg-navy text-ivory py-3">
         <div className="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small">
           <span>© {new Date().getFullYear()} Clínica B.A.L.A</span>
           <nav className="d-flex gap-3">
-            <a className="text-ivory" href="/contacto">Contacto</a>
-            <a className="text-ivory" href="/asistencia">Asistencia</a>
+            <p>Todos los derechos reservados Términos y Condiciones | Política de calidad B.A.L.A | Legales</p>
           </nav>
         </div>
       </footer>

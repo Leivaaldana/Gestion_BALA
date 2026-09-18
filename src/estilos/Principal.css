@@ -1,11 +1,6 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&family=Sora:wght@600;700&display=swap");
 
-/* ============================================
-   Variables de marca (no son variables de Bootstrap,
-   Bootstrap sigue usando su propia paleta para
-   clases que no tocamos acá, como .navbar-toggler-icon)
-   ============================================ */
 .home {
   --midnight: #1c2e4a;
   --dusty: #52677d;
@@ -19,7 +14,34 @@
   font-family: var(--font-body);
 }
 
-/* ---------- Utilidades de color de marca ---------- */
+.home-nav {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1030 !important;
+  background-color: rgba(15, 26, 43, 0.35) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transition: background-color 0.3s ease !important;
+}
+ 
+.home-nav--scrolled {
+  background-color: var(--navy) !important;
+}
+ 
+.home .hero {
+  padding-top: calc(5rem + 76px);
+}
+ 
+@media (max-width: 991.98px) {
+  .home .hero {
+    padding-top: calc(3rem + 76px);
+  }
+}
+
+
 .home .bg-navy { background-color: var(--navy) !important; }
 .home .bg-buttercream { background-color: var(--buttercream) !important; }
 .home .text-ivory { color: var(--ivory) !important; }
@@ -27,7 +49,6 @@
 .home .text-midnight { color: var(--midnight) !important; }
 .home .text-navy-70 { color: var(--navy); opacity: 0.8; }
 
-/* ---------- Nav ---------- */
 .home .navbar-brand {
   font-family: var(--font-display);
   font-size: 1.15rem;
@@ -42,12 +63,12 @@
   opacity: 1;
 }
 
-/* ---------- Botones de marca ---------- */
 .home .btn-dusty {
   background-color: var(--dusty);
   border-color: var(--dusty);
   color: #fff;
 }
+
 .home .btn-dusty:hover,
 .home .btn-dusty:focus-visible {
   background-color: #465a6f;
@@ -70,6 +91,9 @@
 .home .hero {
   background: linear-gradient(180deg, var(--midnight) 0%, var(--navy) 100%);
   color: var(--ivory);
+  background-image: linear-gradient(180deg, rgba(28,46,74,0.85) 0%, rgba(15,26,43,0.9) 100%), url("../assets/jason-hu-9_4CdmYYEjc-unsplash.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
 .home .hero-eyebrow {
@@ -117,7 +141,6 @@
   fill: rgba(189, 196, 212, 0.4);
 }
 
-/* ---------- Pilares ---------- */
 .home .pillar-border {
   border-left: 2px solid rgba(15, 26, 43, 0.12);
   padding-left: 1.75rem;
