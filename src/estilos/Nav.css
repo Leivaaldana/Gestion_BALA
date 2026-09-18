@@ -1,0 +1,90 @@
+/* ============================================
+   Variables de marca en :root (globales), para
+   que cualquier página/componente pueda usarlas,
+   no solo la página Principal.
+   Si ya las tenés declaradas en otro CSS global,
+   podés borrar este bloque de variables acá y
+   dejar solo el resto.
+   ============================================ */
+:root {
+  --midnight: #1c2e4a;
+  --dusty: #52677d;
+  --ivory: #bdc4d4;
+  --navy: #0f1a2b;
+  --buttercream: #d1cfc9;
+}
+
+/* ---------- Nav ---------- */
+.site-nav {
+  background-color: var(--navy);
+}
+
+.site-nav .navbar-brand {
+  color: #fff !important;
+  font-size: 1.15rem;
+}
+
+.site-nav-link {
+  color: var(--ivory) !important;
+  opacity: 0.85;
+  position: relative;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.site-nav-link:hover,
+.site-nav-link:focus-visible {
+  opacity: 1;
+}
+
+/* Estado activo: la página en la que estás parado,
+   NavLink le agrega la clase .active automáticamente */
+.site-nav-link.active {
+  color: #fff !important;
+  opacity: 1;
+  font-weight: 500;
+}
+
+.site-nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background-color: var(--dusty);
+  border-radius: 2px;
+}
+
+/* ---------- Botones (reutilizando las mismas
+   clases custom que ya usás en Principal) ---------- */
+.btn-dusty {
+  background-color: var(--dusty);
+  border-color: var(--dusty);
+  color: #fff;
+}
+.btn-dusty:hover,
+.btn-dusty:focus-visible {
+  background-color: #465a6f;
+  border-color: #465a6f;
+  color: #fff;
+}
+
+.btn-outline-ivory {
+  background-color: transparent;
+  border-color: rgba(189, 196, 212, 0.5);
+  color: var(--ivory);
+}
+.btn-outline-ivory:hover,
+.btn-outline-ivory:focus-visible {
+  background-color: rgba(189, 196, 212, 0.12);
+  border-color: var(--ivory);
+  color: #fff;
+}
+
+/* En mobile, el link activo no necesita la línea
+   inferior (queda mejor solo con el color/peso) */
+@media (max-width: 991.98px) {
+  .site-nav-link.active::after {
+    display: none;
+  }
+}
