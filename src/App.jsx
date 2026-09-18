@@ -7,21 +7,18 @@ import Layout from "./layouts/Layout.jsx";
 import Principal from './paginas/Principal.jsx'
 import { Routes, Route } from "react-router-dom";
 import Navbar from './componentes/nav.jsx'
-
+import Contacto from './paginas/Contactos'
 
 function App() {
   return (
+    <Routes>
+      <Route path="/" element={<Principal />} />
 
-      <Routes>
-        <Route path="/" element={<Principal />} />
-
-
-        <Route element={<Layout />}>
-        {/* Poner las páginas acá */}
-        </Route>
-      </Routes>
+      <Route element={<Layout />}>
+        <Route path="/contacto" element={<Contacto />} />
+      </Route>
+    </Routes>
   );
 }
-
 
 export default App

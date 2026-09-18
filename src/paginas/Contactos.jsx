@@ -1,21 +1,10 @@
 import React from "react";
-import "./Contacto.css";
+import "../estilos/Contactos.css";
 
 function Contacto() {
   return (
     <div className="contacto-page">
 
-      {/* ENCABEZADO */}
-      <header className="contacto-header">
-        <div className="logo">Mi Sitio</div>
-
-        <nav>
-          <a href="/">Inicio</a>
-          <a href="/productos">Productos</a>
-          <a href="/nosotros">Nosotros</a>
-          <a href="/contacto" className="activo">Contacto</a>
-        </nav>
-      </header>
 
       {/* CONTENIDO */}
       <main className="contacto-container">
