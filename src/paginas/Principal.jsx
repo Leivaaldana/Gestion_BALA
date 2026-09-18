@@ -1,7 +1,7 @@
 import "../estilos/Principal.css";
 import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function Principal() {
   const [scrolled, setScrolled] = useState(false);
  
   useEffect(() => {
