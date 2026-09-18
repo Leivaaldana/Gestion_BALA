@@ -156,6 +156,40 @@
   font-family: var(--font-display);
 }
 
+.footer-links a {
+  color: var(--ivory);
+  opacity: 0.85;
+  text-decoration: none;
+}
+ 
+.footer-links a:hover,
+.footer-links a:focus-visible {
+  opacity: 1;
+  text-decoration: underline;
+}
+ 
+.footer-sep {
+  margin: 0 0.75rem;
+  opacity: 0.4;
+}
+ 
+.footer-divider {
+  height: 1px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+ 
+@media (max-width: 575.98px) {
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .footer-sep {
+    display: none;
+  }
+}
+
 @media (max-width: 767.98px) {
   .home .pillar-border {
     border-left: none;

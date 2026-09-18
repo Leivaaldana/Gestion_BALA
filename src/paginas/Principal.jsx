@@ -154,12 +154,19 @@ export default function Home() {
         </div>
       </section>
  
-      <footer className="bg-navy text-ivory py-3">
-        <div className="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small">
-          <span>© {new Date().getFullYear()} Clínica B.A.L.A</span>
-          <nav className="d-flex gap-3">
-            <p>Todos los derechos reservados Términos y Condiciones | Política de calidad B.A.L.A | Legales</p>
+      <footer className="bg-navy text-ivory py-4 footer-bala">
+        <div className="container">
+          <nav className="footer-links text-center pb-3">
+            <a href="/terminos">Términos y Condiciones</a>
+            <span className="footer-sep">|</span>
+            <a href="/calidad">Política de calidad B.A.L.A</a>
+            <span className="footer-sep">|</span>
+            <a href="/legales">Legales</a>
           </nav>
+        <div className="footer-divider"></div>
+        <p className="text-center mb-0 pt-3 small">
+          © {new Date().getFullYear()} Clínica B.A.L.A
+        </p>
         </div>
       </footer>
     </div>
