@@ -133,12 +133,12 @@
 
 .home .art-ring {
   fill: none;
-  stroke: rgba(189, 196, 212, 0.18);
+  stroke: rgba(255, 255, 255, 0.30);
   stroke-width: 1.5;
 }
 .home .art-panel {
   fill: rgba(189, 196, 212, 0.08);
-  stroke: rgba(189, 196, 212, 0.35);
+  stroke: rgba(255, 255, 255, 0.50);
 }
 .home .art-cross {
   stroke: var(--dusty);
