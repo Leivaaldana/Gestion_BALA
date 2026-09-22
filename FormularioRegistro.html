@@ -1,0 +1,44 @@
+<!DOCTYPE html> 
+<html lang="es"> 
+    <head> 
+        <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Registro - Netbook Escolar</title> 
+        <link rel="stylesheet" href="css/registro.css"> 
+    </head>
+    <body>
+        <div class="registro-container"> 
+            <div class="registro-box"> 
+                <h1>Crear una cuenta</h1> 
+                <p class="subtitulo">Registrate para acceder a Netbook Escolar</p> 
+                <form id="registroForm"> 
+                    <div class="campo"> 
+                        <label for="dni">DNI</label> 
+                        <input type="text" id="dni" name="dni" placeholder="Ingresá tu DNI" maxlength="8" > 
+                        <span class="error" id="errorDni"></span> 
+                    </div> 
+                    
+                    <div class="campo"> 
+                        <label for="correo">Correo electrónico</label> 
+                        <input type="email" id="correo" name="correo" placeholder="Ingresá tu correo" > 
+                        <span class="error" id="errorCorreo"></span> 
+                    </div> <div class="campo"> 
+                        <label for="contrasena">Contraseña</label> 
+                        <input type="password" id="contrasena" name="contrasena" placeholder="Ingresá una contraseña" > 
+                        <span class="error" id="errorContrasena"></span> 
+                    </div> 
+                    <div class="campo"> 
+                        <label for="repetirContrasena">Repetir contraseña</label> 
+                        <input type="password" id="repetirContrasena" name="repetirContrasena" placeholder="Repetí tu contraseña" > 
+                        <span class="error" id="errorRepetir"></span> 
+                    </div> 
+                    <button type="submit">Registrarme</button> 
+                    <p id="mensajeExito" class="exito"></p> 
+                </form> 
+            </div> 
+        </div> 
+        <script src="js/registro.js"></script> 
+    </body> 
+    </html>
+
+
+   
