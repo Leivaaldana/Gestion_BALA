@@ -1,0 +1,152 @@
+:root {
+  --midnight: #1c2e4a;
+  --dusty: #52677d;
+  --ivory: #bdc4d4;
+  --navy: #0f1a2b;
+  --buttercream: #d1cfc9;
+
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
+}
+
+.auth-split {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-visual {
+  position: relative;
+  background-image: linear-gradient(
+      180deg,
+      rgba(15, 26, 43, 0.55) 0%,
+      rgba(15, 26, 43, 0.85) 100%
+    ),
+    url("../assets/vitaly-gariev-6eDFSCSwkSo-unsplash.jpg");
+  background-size: cover;
+  background-position: center;
+  align-items: flex-end;
+}
+
+.auth-visual-logo img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+}
+
+.auth-visual-overlay {
+  padding: 3rem;
+  color: #fff;
+  width: 100%;
+}
+
+.auth-visual-logo {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+.auth-visual-quote {
+  border-left: 2px solid var(--dusty);
+  padding-left: 1.25rem;
+  margin: 0;
+  max-width: 30ch;
+}
+
+.auth-visual-quote p {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--ivory);
+}
+
+/* ---------- Columna del formulario ---------- */
+.auth-form-panel {
+  background-color: #fff;
+  padding: 2rem;
+}
+
+.auth-form-inner {
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-logo {
+  color: var(--midnight);
+  text-decoration: none;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  color: var(--midnight);
+  font-weight: 700;
+  font-size: 1.9rem;
+  letter-spacing: -0.01em;
+}
+
+.auth-sub {
+  color: var(--dusty);
+  font-size: 0.98rem;
+}
+
+.form-label {
+  color: var(--midnight);
+  font-weight: 500;
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
+}
+
+.auth-input {
+  border-color: rgba(28, 46, 74, 0.18);
+  padding: 0.75rem 1rem;
+  font-size: 0.98rem;
+}
+
+.auth-input:focus {
+  border-color: var(--dusty);
+  box-shadow: 0 0 0 0.2rem rgba(82, 103, 125, 0.18);
+}
+
+.auth-link {
+  color: var(--dusty);
+  text-decoration: none;
+}
+.auth-link:hover,
+.auth-link:focus-visible {
+  text-decoration: underline;
+  color: var(--midnight);
+}
+
+.btn-dusty {
+  background-color: var(--dusty);
+  border-color: var(--dusty);
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.btn-dusty:hover,
+.btn-dusty:focus-visible {
+  background-color: #465a6f;
+  border-color: #465a6f;
+  color: #fff;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+  .auth-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .auth-form-panel {
+    padding: 1.5rem;
+  }
+}
