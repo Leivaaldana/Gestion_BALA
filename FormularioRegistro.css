@@ -1,0 +1,131 @@
+@font-face {
+    font-family: playfair;
+    src: url("../fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: playfair, serif;
+    background-color: #F8FAFC;
+    color: #1F2937;
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registro-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.registro-box {
+    width: 100%;
+    max-width: 450px;
+
+    margin: auto;
+    padding: 40px;
+
+    background-color: white;
+
+    border-radius: 15px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+}
+
+h1 {
+    text-align: center;
+    color: #1E3A8A;
+    margin-bottom: 10px;
+}
+
+.subtitulo {
+    text-align: center;
+    color: #64748B;
+    margin-bottom: 30px;
+}
+
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 7px;
+
+    font-weight: bold;
+    color: #1F2937;
+}
+
+.campo input {
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 2px solid #BFDBFE;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    outline: none;
+
+    transition: 0.3s;
+}
+
+.campo input:focus {
+    border-color: #2563EB;
+}
+
+.campo input.input-error {
+    border-color: #DC2626;
+}
+
+.error {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #DC2626;
+
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #1E3A8A;
+    color: white;
+
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #2563EB;
+}
+
+.exito {
+    margin-top: 20px;
+
+    text-align: center;
+
+    color: #15803D;
+    font-weight: bold;
+}
