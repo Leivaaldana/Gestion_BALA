@@ -1,0 +1,264 @@
+:root {
+  --midnight: #1c2e4a;
+  --dusty: #52677d;
+  --ivory: #bdc4d4;
+  --navy: #0f1a2b;
+  --buttercream: #d1cfc9;
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
+}
+
+/* ---------- Layout general ---------- */
+.dashboard-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f5f3;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background-color: var(--navy);
+  color: var(--ivory);
+  padding: 1.75rem 1.25rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar-brand {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-role {
+  color: var(--dusty);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 2rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sidebar-link {
+  color: var(--ivory);
+  text-decoration: none;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  opacity: 0.8;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus-visible {
+  background-color: rgba(189, 196, 212, 0.08);
+  opacity: 1;
+}
+
+.sidebar-link.active {
+  background-color: var(--dusty);
+  color: #fff;
+  opacity: 1;
+  font-weight: 500;
+}
+
+.sidebar-logout {
+  border-top: 1px solid rgba(189, 196, 212, 0.15);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+/* ---------- Encabezado de página ---------- */
+.page-title {
+  font-family: var(--font-display);
+  color: var(--midnight);
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.page-subtitle {
+  color: var(--dusty);
+  font-size: 0.95rem;
+}
+
+/* ---------- Tarjetas genéricas (contenedor blanco) ---------- */
+.panel-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: 0 1px 3px rgba(15, 26, 43, 0.08);
+}
+
+/* ---------- Tabla de datos ---------- */
+.data-table-wrapper {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 1px 3px rgba(15, 26, 43, 0.08);
+  overflow-x: auto;
+}
+
+.data-table {
+  margin-bottom: 0;
+}
+
+.data-table thead th {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--dusty);
+  border-bottom: 2px solid rgba(28, 46, 74, 0.08);
+  font-weight: 600;
+  padding: 0.9rem 0.75rem;
+}
+
+.data-table tbody td {
+  padding: 0.85rem 0.75rem;
+  font-size: 0.92rem;
+  color: var(--midnight);
+  border-bottom: 1px solid rgba(28, 46, 74, 0.06);
+}
+
+/* ---------- Badges de estado ---------- */
+.badge-estado {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+.badge-success { background: rgba(34, 139, 89, 0.12); color: #1c7c4f; }
+.badge-warning { background: rgba(196, 141, 30, 0.14); color: #a06a0e; }
+.badge-danger  { background: rgba(196, 60, 60, 0.12); color: #b23c3c; }
+.badge-info    { background: rgba(82, 103, 125, 0.14); color: var(--midnight); }
+.badge-muted   { background: rgba(28, 46, 74, 0.08); color: var(--dusty); }
+
+/* ---------- Stat cards (Directivos) ---------- */
+.stat-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 26, 43, 0.08);
+  border-left: 3px solid var(--dusty);
+}
+
+.stat-label {
+  color: var(--dusty);
+  font-size: 0.85rem;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  color: var(--midnight);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.stat-hint {
+  color: var(--dusty);
+  font-size: 0.8rem;
+}
+
+/* ---------- Grilla de habitaciones (Administrativo) ---------- */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.room-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(15, 26, 43, 0.08);
+  border-top: 4px solid var(--dusty);
+}
+
+.room-card.estado-disponible { border-top-color: #1c7c4f; }
+.room-card.estado-ocupada { border-top-color: #b23c3c; }
+.room-card.estado-mantenimiento { border-top-color: var(--dusty); opacity: 0.75; }
+.room-card.estado-reservada { border-top-color: #a06a0e; }
+
+.room-card h3 {
+  font-size: 1.1rem;
+  color: var(--midnight);
+  margin-bottom: 0.15rem;
+}
+
+.room-card p {
+  font-size: 0.8rem;
+  color: var(--dusty);
+  margin-bottom: 0.5rem;
+}
+
+/* ---------- Checklist (Suministro de medicación) ---------- */
+.check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(28, 46, 74, 0.06);
+}
+.check-row:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Modal de alertas ---------- */
+.alert-modal--danger .alert-modal-icon { color: #b23c3c; }
+.alert-modal--warning .alert-modal-icon { color: #a06a0e; }
+.alert-modal .modal-title {
+  font-family: var(--font-display);
+  color: var(--midnight);
+}
+
+/* ---------- Botones de marca reutilizados ---------- */
+.btn-dusty {
+  background-color: var(--dusty);
+  border-color: var(--dusty);
+  color: #fff;
+}
+.btn-dusty:hover, .btn-dusty:focus-visible {
+  background-color: #465a6f;
+  border-color: #465a6f;
+  color: #fff;
+}
+.btn-outline-midnight {
+  border-color: var(--midnight);
+  color: var(--midnight);
+}
+.btn-outline-midnight:hover {
+  background-color: var(--midnight);
+  color: #fff;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    z-index: 1050;
+    transition: left 0.2s ease;
+  }
+  .dashboard-content {
+    padding: 1.5rem;
+  }
+}
