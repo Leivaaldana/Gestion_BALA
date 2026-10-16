@@ -1,4 +1,4 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const MENUS = {
   paciente: [
@@ -37,37 +37,24 @@ const ROLE_LABELS = {
   directivos: "Directivo/a",
 };
 
+// La marca y "Cerrar sesión" ahora viven en el header global
 export default function Sidebar({ role }) {
   const items = MENUS[role] || [];
 
   return (
     <aside className="sidebar d-flex flex-column">
-      <Link to="/" className="sidebar-brand d-flex align-items-center gap-2">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M11 2H13V11H22V13H13V22H11V13H2V11H11V2Z" fill="currentColor" />
-        </svg>
-        <span>B.A.L.A</span>
-      </Link>
-
       <p className="sidebar-role">{ROLE_LABELS[role] || "Usuario"}</p>
-
       <nav className="sidebar-nav flex-grow-1">
         {items.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
-            className={({ isActive }) =>
-              `sidebar-link ${isActive ? "active" : ""}`
-            }
+            className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
           >
             {item.label}
           </NavLink>
         ))}
       </nav>
-
-      <Link to="/login" className="sidebar-link sidebar-logout">
-        Cerrar sesión
-      </Link>
     </aside>
   );
 }
