@@ -1,22 +1,34 @@
-/* ============================================
-   Variables de marca en :root (globales), para
-   que cualquier página/componente pueda usarlas,
-   no solo la página Principal.
-   Si ya las tenés declaradas en otro CSS global,
-   podés borrar este bloque de variables acá y
-   dejar solo el resto.
-   ============================================ */
 :root {
   --midnight: #1c2e4a;
   --dusty: #52677d;
   --ivory: #bdc4d4;
   --navy: #0f1a2b;
   --buttercream: #d1cfc9;
+  --nav-h: 72px; /* alto aproximado del header, lo usan Sidebar y páginas de auth */
 }
 
-/* ---------- Nav ---------- */
+/* Por defecto: sólido y pegado arriba al hacer scroll */
 .site-nav {
   background-color: var(--navy);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  transition: background-color 0.3s ease;
+}
+
+/* En la página de inicio: flota sobre el hero */
+.site-nav.site-nav--home {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* En inicio y sin haber bajado: transparente con blur */
+.site-nav.site-nav--top {
+  background-color: rgba(15, 26, 43, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .site-nav .navbar-brand {
@@ -28,22 +40,16 @@
   color: var(--ivory) !important;
   opacity: 0.85;
   position: relative;
-  transition: opacity 0.15s ease, color 0.15s ease;
+  transition: opacity 0.15s ease;
 }
-
 .site-nav-link:hover,
-.site-nav-link:focus-visible {
-  opacity: 1;
-}
+.site-nav-link:focus-visible { opacity: 1; }
 
-/* Estado activo: la página en la que estás parado,
-   NavLink le agrega la clase .active automáticamente */
 .site-nav-link.active {
   color: #fff !important;
   opacity: 1;
   font-weight: 500;
 }
-
 .site-nav-link.active::after {
   content: "";
   position: absolute;
@@ -55,8 +61,12 @@
   border-radius: 2px;
 }
 
-/* ---------- Botones (reutilizando las mismas
-   clases custom que ya usás en Principal) ---------- */
+.site-nav-user {
+  color: var(--ivory);
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+}
+
 .btn-dusty {
   background-color: var(--dusty);
   border-color: var(--dusty);
@@ -81,10 +91,6 @@
   color: #fff;
 }
 
-/* En mobile, el link activo no necesita la línea
-   inferior (queda mejor solo con el color/peso) */
 @media (max-width: 991.98px) {
-  .site-nav-link.active::after {
-    display: none;
-  }
+  .site-nav-link.active::after { display: none; }
 }
