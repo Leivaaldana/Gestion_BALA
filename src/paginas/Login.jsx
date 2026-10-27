@@ -1,8 +1,25 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth, ROLE_HOME } from "../context/AuthContext";
 import logo from "../assets/Logotipo.png";
 import "../estilos/Login.css";
 
 export default function Login() {
+  const [dni, setDni] = useState("");
+const [contrasena, setContrasena] = useState("");
+const [error, setError] = useState("");
+const { login } = useAuth();
+const navigate = useNavigate();
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const res = login(dni, contrasena);
+  if (!res.ok) {
+    setError(res.error);
+    return;
+  }
+  navigate(ROLE_HOME[res.rol]);
+};
   return (
     <div className="auth-split">
       <div className="auth-visual d-none d-lg-flex">
@@ -35,7 +52,7 @@ export default function Login() {
             Ingresá tu DNI y contraseña para acceder a tu cuenta.
           </p>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="dni" className="form-label">
                 DNI
@@ -46,6 +63,8 @@ export default function Login() {
                 className="form-control auth-input"
                 placeholder="Ej: 30123456"
                 inputMode="numeric"
+                value={dni}
+                onChange={(e) => setDni(e.target.value)}
                 required
               />
             </div>
@@ -59,6 +78,8 @@ export default function Login() {
                 id="password"
                 className="form-control auth-input"
                 placeholder="••••••••"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
                 required
               />
             </div>
@@ -69,17 +90,23 @@ export default function Login() {
               </Link>
             </div>
 
-            <button type="submit" className="btn btn-dusty w-100 btn-lg mb-4">
-              Iniciar sesión
-            </button>
+            {error && (
+              <div className="alert alert-danger py-2" role="alert">
+                {error}
+              </div>
+  )}
 
-            <p className="text-center mb-0 small">
-              ¿No tenés cuenta todavía?{" "}
-              <Link to="/registro" className="auth-link fw-semibold">
-                Registrate
-              </Link>
-            </p>
-          </form>
+  <button type="submit" className="btn btn-dusty w-100 btn-lg mb-4">
+    Iniciar sesión
+  </button>
+
+  <p className="text-center mb-0 small">
+    ¿No tenés cuenta todavía?{" "}
+    <Link to="/registro" className="auth-link fw-semibold">
+      Registrate
+    </Link>
+  </p>
+</form>
         </div>
       </div>
     </div>
