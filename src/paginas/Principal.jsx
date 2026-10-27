@@ -1,74 +1,9 @@
+import { Link } from "react-router-dom";
 import "../estilos/Principal.css";
-import { useEffect, useState } from "react";
 
 export default function Principal() {
-  const [scrolled, setScrolled] = useState(false);
- 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
- 
   return (
     <div className="home">
-      <nav
-        className={`navbar navbar-expand-lg navbar-dark py-3 home-nav ${
-          scrolled ? "home-nav--scrolled" : ""
-        }`}
-      >
-        <div className="container">
-          <a className="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="text-dusty"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M11 2H13V11H22V13H13V22H11V13H2V11H11V2Z" fill="currentColor" />
-            </svg>
-            B.A.L.A
-          </a>
- 
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#homeNav"
-            aria-controls="homeNav"
-            aria-expanded="false"
-            aria-label="Abrir menú"
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
- 
-          <div className="collapse navbar-collapse" id="homeNav">
-            <ul className="navbar-nav mx-auto gap-lg-4 mt-3 mt-lg-0">
-              <li className="nav-item">
-                <a className="nav-link text-ivory" href="/equipo">El equipo</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-ivory" href="/anuncios">Anuncios</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-ivory" href="/asistencia">Asistencia</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-ivory" href="/contacto">Contacto</a>
-              </li>
-            </ul>
- 
-            <div className="d-flex gap-2 mt-3 mt-lg-0">
-              <a className="btn btn-outline-ivory" href="/registro">Registrarse</a>
-              <a className="btn btn-dusty" href="/login">Iniciar sesión</a>
-            </div>
-          </div>
-        </div>
-      </nav>
- 
       <section className="hero py-5">
         <div className="container py-lg-5">
           <div className="row align-items-center g-5">
@@ -84,15 +19,16 @@ export default function Principal() {
                 personal administrativo.
               </p>
               <div className="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap">
-                <a className="btn btn-dusty btn-lg BotonP" href="/login">
+                {/* Sin sesión, la ruta protegida lo lleva al login */}
+                <Link className="btn btn-dusty btn-lg BotonP" to="/paciente/turnos">
                   Reservar un turno
-                </a>
-                <a className="btn btn-outline-ivory btn-lg BotonP" href="/equipo">
+                </Link>
+                <Link className="btn btn-outline-ivory btn-lg BotonP" to="/equipo">
                   Conocé al equipo
-                </a>
+                </Link>
               </div>
             </div>
- 
+
             <div className="col-lg-6">
               <svg viewBox="0 0 420 420" className="hero-art mx-auto d-block" aria-hidden="true">
                 <circle cx="210" cy="210" r="200" className="art-ring" />
@@ -110,7 +46,7 @@ export default function Principal() {
           </div>
         </div>
       </section>
- 
+
       <section className="py-5 bg-buttercream">
         <div className="container py-4">
           <div className="row row-cols-1 row-cols-md-3 g-4">
@@ -124,7 +60,7 @@ export default function Principal() {
                 </p>
               </div>
             </div>
- 
+
             <div className="col">
               <div className="pillar h-100 pillar-border">
                 <span className="pillar-label">Historial</span>
@@ -137,7 +73,7 @@ export default function Principal() {
                 </p>
               </div>
             </div>
- 
+
             <div className="col">
               <div className="pillar h-100 pillar-border">
                 <span className="pillar-label">Tiempo real</span>
@@ -153,7 +89,7 @@ export default function Principal() {
           </div>
         </div>
       </section>
- 
+
       <footer className="bg-navy text-ivory py-4 footer-bala">
         <div className="container">
           <nav className="footer-links text-center pb-3">
@@ -163,10 +99,10 @@ export default function Principal() {
             <span className="footer-sep">|</span>
             <a href="/legales">Legales</a>
           </nav>
-        <div className="footer-divider"></div>
-        <p className="text-center mb-0 pt-3 small">
-          © {new Date().getFullYear()} Clínica B.A.L.A
-        </p>
+          <div className="footer-divider"></div>
+          <p className="text-center mb-0 pt-3 small">
+            © {new Date().getFullYear()} Clínica B.A.L.A
+          </p>
         </div>
       </footer>
     </div>
