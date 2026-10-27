@@ -1,11 +1,13 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
-// Header único (se dibuja una sola vez, no es un layout)
+// Header único
 import Nav from "./componentes/Nav.jsx";
 
-// Solo para el menú lateral de los paneles internos
+// Layout del menú lateral + guardas de acceso
 import DashboardLayout from "./componentes/DashboardLayout.jsx";
+import RutaProtegida from "./componentes/RutaProtegida.jsx";
+import SoloInvitados from "./componentes/SoloInvitados.jsx";
 
 // Páginas públicas
 import Principal from "./paginas/Principal.jsx";
@@ -45,46 +47,61 @@ function App() {
       <Nav />
 
       <Routes>
-        {/* Públicas */}
+        {/* Públicas (se ven con o sin sesión) */}
         <Route path="/" element={<Principal />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Registro />} />
         <Route path="/contacto" element={<Contacto />} />
+        {/* Más adelante: /equipo, /anuncios, /asistencia */}
+
+        {/* Solo sin sesión: si ya iniciaste, te manda a tu panel */}
+        <Route element={<SoloInvitados />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+        </Route>
 
         {/* Paciente */}
-        <Route element={<DashboardLayout role="paciente" />}>
-          <Route path="/paciente/historial" element={<MiHistorialClinico />} />
-          <Route path="/paciente/turnos" element={<Turnos />} />
-          <Route path="/paciente/estudios" element={<RepositorioEstudios />} />
+        <Route element={<RutaProtegida rol="paciente" />}>
+          <Route element={<DashboardLayout role="paciente" />}>
+            <Route path="/paciente/historial" element={<MiHistorialClinico />} />
+            <Route path="/paciente/turnos" element={<Turnos />} />
+            <Route path="/paciente/estudios" element={<RepositorioEstudios />} />
+          </Route>
         </Route>
 
         {/* Médico */}
-        <Route element={<DashboardLayout role="medico" />}>
-          <Route path="/medico/historia" element={<GestionHistoriaClinica />} />
-          <Route path="/medico/guardias" element={<ControlGuardias />} />
-          <Route path="/medico/derivacion" element={<DerivacionInternacion />} />
-          <Route path="/medico/prescripciones" element={<SistemaPrescripciones />} />
+        <Route element={<RutaProtegida rol="medico" />}>
+          <Route element={<DashboardLayout role="medico" />}>
+            <Route path="/medico/historia" element={<GestionHistoriaClinica />} />
+            <Route path="/medico/guardias" element={<ControlGuardias />} />
+            <Route path="/medico/derivacion" element={<DerivacionInternacion />} />
+            <Route path="/medico/prescripciones" element={<SistemaPrescripciones />} />
+          </Route>
         </Route>
 
         {/* Enfermera */}
-        <Route element={<DashboardLayout role="enfermera" />}>
-          <Route path="/enfermera/medicacion" element={<SuministroMedicacion />} />
-          <Route path="/enfermera/guardias" element={<ControlGuardiasEnfermera />} />
-          <Route path="/enfermera/insumos" element={<GestionInsumos />} />
+        <Route element={<RutaProtegida rol="enfermera" />}>
+          <Route element={<DashboardLayout role="enfermera" />}>
+            <Route path="/enfermera/medicacion" element={<SuministroMedicacion />} />
+            <Route path="/enfermera/guardias" element={<ControlGuardiasEnfermera />} />
+            <Route path="/enfermera/insumos" element={<GestionInsumos />} />
+          </Route>
         </Route>
 
         {/* Administrativo */}
-        <Route element={<DashboardLayout role="administrativo" />}>
-          <Route path="/administrativo/altas" element={<RegistroAltas />} />
-          <Route path="/administrativo/camas" element={<GestionCamas />} />
-          <Route path="/administrativo/agenda" element={<GestionAgenda />} />
+        <Route element={<RutaProtegida rol="administrativo" />}>
+          <Route element={<DashboardLayout role="administrativo" />}>
+            <Route path="/administrativo/altas" element={<RegistroAltas />} />
+            <Route path="/administrativo/camas" element={<GestionCamas />} />
+            <Route path="/administrativo/agenda" element={<GestionAgenda />} />
+          </Route>
         </Route>
 
         {/* Directivos */}
-        <Route element={<DashboardLayout role="directivos" />}>
-          <Route path="/directivos/recursos" element={<PanelRecursos />} />
-          <Route path="/directivos/analisis" element={<AnalisisDatos />} />
-          <Route path="/directivos/auditoria" element={<SupervisionAuditoria />} />
+        <Route element={<RutaProtegida rol="directivos" />}>
+          <Route element={<DashboardLayout role="directivos" />}>
+            <Route path="/directivos/recursos" element={<PanelRecursos />} />
+            <Route path="/directivos/analisis" element={<AnalisisDatos />} />
+            <Route path="/directivos/auditoria" element={<SupervisionAuditoria />} />
+          </Route>
         </Route>
       </Routes>
     </>
