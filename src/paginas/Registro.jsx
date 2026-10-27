@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/Registro.css";
+import "../estilos/Registro.css";
 
 function FormularioRegistro() {
   return (
