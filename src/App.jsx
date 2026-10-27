@@ -1,14 +1,16 @@
-import './App.css'
+import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
-// Layouts
-import Layout from "./componentes/Layout.jsx";
+// Header único (se dibuja una sola vez, no es un layout)
+import Nav from "./componentes/Nav.jsx";
+
+// Solo para el menú lateral de los paneles internos
 import DashboardLayout from "./componentes/DashboardLayout.jsx";
 
 // Páginas públicas
 import Principal from "./paginas/Principal.jsx";
 import Login from "./paginas/Login.jsx";
-import Registro from "./paginas/Registro.jsx"; // ajustá el nombre si tu archivo se llama distinto
+import Registro from "./paginas/Registro.jsx"; // ajustá si tu archivo se llama distinto
 import Contacto from "./paginas/Contactos.jsx";
 
 // Paciente
@@ -39,10 +41,10 @@ import SupervisionAuditoria from "./paginas/directivos/SupervisionAuditoria.jsx"
 
 function App() {
   return (
-    <Routes>
-      {/* Un solo Layout (con el header) para todo el sitio */}
-      <Route element={<Layout />}>
+    <>
+      <Nav />
 
+      <Routes>
         {/* Públicas */}
         <Route path="/" element={<Principal />} />
         <Route path="/login" element={<Login />} />
@@ -84,9 +86,8 @@ function App() {
           <Route path="/directivos/analisis" element={<AnalisisDatos />} />
           <Route path="/directivos/auditoria" element={<SupervisionAuditoria />} />
         </Route>
-
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 }
 

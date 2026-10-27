@@ -3,12 +3,16 @@ import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
 import "../estilos/Nav.css";
 
+// Rutas donde el header NO se muestra
+const RUTAS_SIN_HEADER = ["/login", "/registro"];
+
 export default function Nav() {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const isHome = pathname === "/";
+  const oculto = RUTAS_SIN_HEADER.includes(pathname);
   const [scrolled, setScrolled] = useState(false);
 
   // Solo en la página de inicio: transparente arriba, sólido al bajar
@@ -22,6 +26,9 @@ export default function Nav() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
+
+  // Los hooks van siempre arriba; recién acá decidimos si se dibuja
+  if (oculto) return null;
 
   const handleLogout = () => {
     logout();
@@ -65,7 +72,7 @@ export default function Nav() {
             <li className="nav-item"><NavLink className={navLinkClass} to="/contacto">Contacto</NavLink></li>
           </ul>
 
-          {/* Zona que cambia según la sesión */}
+          {/* Esta zona cambia según haya sesión o no */}
           <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
             {user ? (
               <>
