@@ -1,14 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=Sora:wght@600;700&display=swap");
+
 :root {
   --midnight: #1c2e4a;
   --dusty: #52677d;
   --ivory: #bdc4d4;
   --navy: #0f1a2b;
   --buttercream: #d1cfc9;
-  --nav-h: 72px; /* alto aproximado del header, lo usan Sidebar y páginas de auth */
+
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
+
+  --nav-h: 72px;       /* alto aproximado del header */
+  --btn-radius: 8px;   /* ← cambiá este valor para redondear más o menos los botones del header */
 }
 
-/* Por defecto: sólido y pegado arriba al hacer scroll */
+/* ---------- Header ---------- */
 .site-nav {
+  font-family: var(--font-body);
   background-color: var(--navy);
   position: sticky;
   top: 0;
@@ -32,12 +40,16 @@
 }
 
 .site-nav .navbar-brand {
-  color: #fff !important;
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: 1.15rem;
+  color: #fff !important;
 }
 
+/* ---------- Links ---------- */
 .site-nav-link {
   color: var(--ivory) !important;
+  font-size: 0.95rem;
   opacity: 0.85;
   position: relative;
   transition: opacity 0.15s ease;
@@ -67,28 +79,46 @@
   margin-right: 0.5rem;
 }
 
-.btn-dusty {
+/* ---------- Botones del header ---------- */
+.site-nav .btn {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--btn-radius);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.site-nav .btn-dusty {
   background-color: var(--dusty);
   border-color: var(--dusty);
   color: #fff;
 }
-.btn-dusty:hover,
-.btn-dusty:focus-visible {
+.site-nav .btn-dusty:hover,
+.site-nav .btn-dusty:focus-visible {
   background-color: #465a6f;
   border-color: #465a6f;
   color: #fff;
 }
 
-.btn-outline-ivory {
+.site-nav .btn-outline-ivory {
   background-color: transparent;
-  border-color: rgba(189, 196, 212, 0.5);
+  border-color: rgba(189, 196, 212, 0.45);
   color: var(--ivory);
 }
-.btn-outline-ivory:hover,
-.btn-outline-ivory:focus-visible {
+.site-nav .btn-outline-ivory:hover,
+.site-nav .btn-outline-ivory:focus-visible {
   background-color: rgba(189, 196, 212, 0.12);
   border-color: var(--ivory);
   color: #fff;
+}
+
+.site-nav .btn:focus-visible {
+  outline: 2px solid var(--ivory);
+  outline-offset: 2px;
 }
 
 @media (max-width: 991.98px) {
