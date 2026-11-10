@@ -1,8 +1,13 @@
-import { createContext, useContext, useState } from "react";
-import { leer, guardar, siguienteId } from "../datos/almacen";
-import { USUARIOS_INICIALES } from "../datos/usuarios";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { doc, getDoc, setDoc, getDocs, query, where, collection } from "firebase/firestore";
+import { auth, db } from "../firebase";
 
-// Panel de inicio de cada rol (lo usan el header y el login)
 export const ROLE_HOME = {
   paciente: "/paciente/historial",
   medico: "/medico/historia",
@@ -11,76 +16,100 @@ export const ROLE_HOME = {
   directivos: "/directivos/recursos",
 };
 
+// Firebase Auth pide un email: usamos el DNI como email interno
+const emailInterno = (dni) => `${dni.trim()}@bala.app`;
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // Lista de usuarios registrados (array de objetos con id único)
-  const [usuarios, setUsuarios] = useState(() =>
-    leer("bala_usuarios", USUARIOS_INICIALES)
-  );
+  const [user, setUser] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const registrando = useRef(false); // evita la carrera entre crear la cuenta y guardar el perfil
 
-  // Sesión actual: null si nadie inició sesión, o { id, dni, nombre, rol }
-  const [user, setUser] = useState(() => leer("bala_sesion", null));
+  useEffect(() => {
+    const cancelar = onAuthStateChanged(auth, async (fbUser) => {
+      if (registrando.current) return;
+      if (!fbUser) {
+        setUser(null);
+        setCargando(false);
+        return;
+      }
+      try {
+        const dni = fbUser.email.split("@")[0];
+        const snap = await getDoc(doc(db, "usuarios", dni));
+        setUser(snap.exists() ? armarSesion(snap.data()) : null);
+      } catch {
+        setUser(null);
+      }
+      setCargando(false);
+    });
+    return cancelar;
+  }, []);
 
-  const abrirSesion = (u) => {
-    const sesion = {
-      id: u.id,
-      dni: u.dni,
-      rol: u.rol,
-      nombre: `${u.nombre} ${u.apellido}`,
-    };
-    setUser(sesion);
-    guardar("bala_sesion", sesion);
-    return sesion;
-  };
+  const armarSesion = (u) => ({
+    dni: u.dni,
+    rol: u.rol,
+    nombre: `${u.nombre} ${u.apellido}`,
+  });
 
   // Devuelve { ok: true, rol } o { ok: false, error }
-  const login = (dni, contrasena) => {
-    const encontrado = usuarios.find(
-      (u) => u.dni === dni.trim() && u.contrasena === contrasena
-    );
-    if (!encontrado) {
+  const login = async (dni, contrasena) => {
+    try {
+      const cred = await signInWithEmailAndPassword(auth, emailInterno(dni), contrasena);
+      const snap = await getDoc(doc(db, "usuarios", dni.trim()));
+      if (!snap.exists()) {
+        await signOut(auth);
+        return { ok: false, error: "Tu cuenta no tiene un perfil asignado." };
+      }
+      const sesion = armarSesion(snap.data());
+      setUser(sesion);
+      return { ok: true, rol: sesion.rol };
+    } catch (e) {
       return { ok: false, error: "DNI o contraseña incorrectos." };
     }
-    abrirSesion(encontrado);
-    return { ok: true, rol: encontrado.rol };
   };
 
-  // Crea un paciente nuevo e inicia su sesión.
-  // (Médicos, enfermeros, etc. no se registran solos: los carga la administración.)
-  const registrar = ({ dni, nombre, apellido, email, contrasena }) => {
-    if (usuarios.some((u) => u.dni === dni.trim())) {
-      return { ok: false, error: "Ya existe una cuenta con ese DNI." };
-    }
-    if (usuarios.some((u) => u.email.toLowerCase() === email.trim().toLowerCase())) {
-      return { ok: false, error: "Ya existe una cuenta con ese correo." };
-    }
+  // Solo registra pacientes (el resto de roles los carga la administración)
+  const registrar = async ({ dni, nombre, apellido, email, contrasena }) => {
+    const emailNorm = email.trim().toLowerCase();
+    registrando.current = true;
+    try {
+      const dup = await getDocs(query(collection(db, "usuarios"), where("email", "==", emailNorm)));
+      if (!dup.empty) return { ok: false, error: "Ya existe una cuenta con ese correo." };
 
-    const nuevo = {
-      id: siguienteId(usuarios),
-      dni: dni.trim(),
-      contrasena,
-      nombre: nombre.trim(),
-      apellido: apellido.trim(),
-      email: email.trim().toLowerCase(),
-      rol: "paciente",
-    };
+      await createUserWithEmailAndPassword(auth, emailInterno(dni), contrasena);
 
-    const lista = [...usuarios, nuevo];
-    setUsuarios(lista);
-    guardar("bala_usuarios", lista);
-    abrirSesion(nuevo);
-    return { ok: true, rol: nuevo.rol };
+      const perfil = {
+        dni: dni.trim(),
+        nombre: nombre.trim(),
+        apellido: apellido.trim(),
+        email: emailNorm,
+        rol: "paciente",
+      };
+      await setDoc(doc(db, "usuarios", perfil.dni), perfil);
+
+      const sesion = armarSesion(perfil);
+      setUser(sesion);
+      return { ok: true, rol: "paciente" };
+    } catch (e) {
+      if (e.code === "auth/email-already-in-use")
+        return { ok: false, error: "Ya existe una cuenta con ese DNI." };
+      if (e.code === "auth/weak-password")
+        return { ok: false, error: "La contraseña es muy débil." };
+      return { ok: false, error: "No se pudo crear la cuenta. Probá de nuevo." };
+    } finally {
+      registrando.current = false;
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await signOut(auth);
     setUser(null);
-    guardar("bala_sesion", null);
   };
 
   return (
     <AuthContext.Provider value={{ user, login, logout, registrar }}>
-      {children}
+      {!cargando && children}
     </AuthContext.Provider>
   );
 }
