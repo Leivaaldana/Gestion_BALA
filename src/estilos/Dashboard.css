@@ -585,3 +585,41 @@
   .dashboard-content .btn,
   .sidebar-link { transition: none; }
 }
+
+/* ============ Retoque: más sobrio ============ */
+.page-header::before {
+  content: "B.A.L.A  //  SISTEMA CLÍNICO";
+  background: #121d2e;
+  color: #bdc4d4;
+  border-left: 4px solid #bdc4d4;
+  border-bottom: 0;
+  border-image: none;
+  padding: 0.4rem 0.8rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-title {
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+  text-shadow: 3px 0 0 rgba(82, 103, 125, 0.5);
+}
+
+.page-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--tinta-2);
+}
+
+.stat-value { font-size: 3.4rem; }
+
+.dashboard-content .btn-dusty:hover,
+.dashboard-content .btn-dusty:focus-visible,
+.dashboard-content .btn-dusty:active {
+  background-color: #e4e7ee;
+  color: #0f1a2b;
+}
+
+.dashboard-content .alert-warning::before { width: 8px; }
+.dashboard-content .alert-warning { padding-left: 1.6rem; }
+.dashboard-content .alert,
+.dashboard-content .alert-danger { border-left-width: 10px; }
