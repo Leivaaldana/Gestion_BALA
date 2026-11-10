@@ -82,6 +82,26 @@ match /usuarios/{dni} {
   allow update, delete: if false;
 }
 
+function esPropietarioPerfil(dni) {
+  return request.auth != null
+    && exists(/databases/$(database)/documents/usuarios/$(dni))
+    && (
+      get(/databases/$(database)/documents/usuarios/$(dni)).data.email == request.auth.token.email
+      || request.auth.token.email == dni + "@bala.app"
+    );
+}
+
+match /fotos_perfil/{dni} {
+  allow get: if esPropietarioPerfil(dni);
+  allow list: if false;
+  allow create, update: if esPropietarioPerfil(dni)
+    && request.resource.data.keys().hasOnly(["fotoPerfil"])
+    && request.resource.data.fotoPerfil is string
+    && request.resource.data.fotoPerfil.size() <= 245000
+    && request.resource.data.fotoPerfil.matches("^data:image/jpeg;base64,[A-Za-z0-9+/]+=*$");
+  allow delete: if false;
+}
+
 match /reclamos/{reclamoId} {
   allow create: if request.resource.data.keys().hasOnly([
       "nombre", "email", "asunto", "mensaje", "estado", "respuestas", "creadoEn"
@@ -112,3 +132,7 @@ match /reclamos/{reclamoId} {
 ```
 
 La creación de reclamos es pública para permitir consultas sin iniciar sesión; protegé el proyecto con Firebase App Check y considerá mecanismos anti-spam antes de publicarlo ampliamente. El envío del correo usa EmailJS y no requiere Blaze, Cloud Functions ni una extensión de Firebase.
+
+## Perfil y foto
+
+Cada rol autenticado tiene **Mi perfil** en el menú lateral. La app muestra los datos personales del documento `usuarios/{dni}` y permite seleccionar una foto JPG, PNG o WebP. La imagen se convierte a JPEG y se comprime a un máximo de 180 KiB, y se guarda como `fotoPerfil` (Data URL) en el documento separado `fotos_perfil/{dni}` de Firestore. No utiliza Firebase Storage ni requiere habilitar su facturación. Mantener la foto en un documento separado evita descargar la imagen cada vez que otros flujos consultan el perfil del usuario. La app limita la imagen original a 8 MB y la regla de Firestore permite leer o modificar la imagen solo al titular.

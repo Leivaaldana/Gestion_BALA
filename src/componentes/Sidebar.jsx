@@ -6,28 +6,33 @@ const MENUS = {
     { label: "Mi historial clínico", path: "/paciente/historial" },
     { label: "Turnos", path: "/paciente/turnos" },
     { label: "Repositorio de estudios", path: "/paciente/estudios" },
+    { label: "Mi perfil", path: "/paciente/perfil" },
   ],
   medico: [
     { label: "Historia clínica", path: "/medico/historia" },
     { label: "Control de guardias", path: "/medico/guardias" },
     { label: "Derivación / Internación", path: "/medico/derivacion" },
     { label: "Prescripciones", path: "/medico/prescripciones" },
+    { label: "Mi perfil", path: "/medico/perfil" },
   ],
   enfermera: [
     { label: "Suministro de medicación", path: "/enfermera/medicacion" },
     { label: "Control de guardias", path: "/enfermera/guardias" },
     { label: "Insumos rápidos", path: "/enfermera/insumos" },
+    { label: "Mi perfil", path: "/enfermera/perfil" },
   ],
   administrativo: [
     { label: "Registro de altas", path: "/administrativo/altas" },
     { label: "Camas e internaciones", path: "/administrativo/camas" },
     { label: "Gestión de agenda", path: "/administrativo/agenda" },
     { label: "Gestión de reclamos", path: "/administrativo/reclamos" },
+    { label: "Mi perfil", path: "/administrativo/perfil" },
   ],
   directivos: [
     { label: "Recursos del hospital", path: "/directivos/recursos" },
     { label: "Análisis de datos", path: "/directivos/analisis" },
     { label: "Supervisión de auditoría", path: "/directivos/auditoria" },
+    { label: "Mi perfil", path: "/directivos/perfil" },
   ],
 };
 
@@ -52,7 +57,9 @@ export default function Sidebar({ role }) {
   return (
     <aside className="sidebar d-flex flex-column">
       <div className="sidebar-user">
-        <span className="sidebar-avatar">{iniciales}</span>
+        <span className="sidebar-avatar">
+          {user?.fotoPerfil ? <img src={user.fotoPerfil} alt="" /> : iniciales}
+        </span>
         <div>
           <p className="sidebar-user-name">{user?.nombre}</p>
           <p className="sidebar-role">{ROLE_LABELS[role] || "Usuario"}</p>
