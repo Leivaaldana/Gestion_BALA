@@ -5,15 +5,14 @@ function Contacto() {
   return (
     <div className="contacto-page">
 
-
-      {/* CONTENIDO */}
+      {/* CONTENIDO PRINCIPAL */}
       <main className="contacto-container">
 
         <section className="contacto-intro">
-          <h1>Contactanos</h1>
+          <h1>Estamos para cuidarte</h1>
           <p>
-            ¿Tenés alguna consulta? Completá el formulario y nos pondremos
-            en contacto con vos lo antes posible.
+            ¿Tenés dudas, necesitás coordinar un turno o querés hacernos una consulta? 
+            Completá el formulario y nuestro equipo te responderá a la brevedad.
           </p>
         </section>
 
@@ -21,37 +20,39 @@ function Contacto() {
 
           {/* INFORMACIÓN */}
           <div className="contacto-info">
-            <h2>Información de contacto</h2>
+            <div>
+              <h2>Información de contacto</h2>
 
-            <div className="info-item">
-              <div className="icono">📍</div>
-              <div>
-                <h3>Ubicación</h3>
-                <p>Neuquén, Argentina</p>
+              <div className="info-item">
+                <div className="icono">📍</div>
+                <div>
+                  <h3>Ubicación</h3>
+                  <p>Neuquén, Argentina</p>
+                </div>
               </div>
-            </div>
 
-            <div className="info-item">
-              <div className="icono">📞</div>
-              <div>
-                <h3>Teléfono</h3>
-                <p>299 673 2039</p>
+              <div className="info-item">
+                <div className="icono">📞</div>
+                <div>
+                  <h3>Teléfono</h3>
+                  <p>299 673 2039</p>
+                </div>
               </div>
-            </div>
 
-            <div className="info-item">
-              <div className="icono">✉️</div>
-              <div>
-                <h3>Email</h3>
-                <p>contacto@misitio.com</p>
+              <div className="info-item">
+                <div className="icono">✉️</div>
+                <div>
+                  <h3>Email</h3>
+                  <p>contacto@misitio.com</p>
+                </div>
               </div>
-            </div>
 
-            <div className="info-item">
-              <div className="icono">🕐</div>
-              <div>
-                <h3>Horarios</h3>
-                <p>Lunes a Viernes de 9:00 a 18:00</p>
+              <div className="info-item">
+                <div className="icono">🕐</div>
+                <div>
+                  <h3>Horarios de atención</h3>
+                  <p>Lunes a Viernes de 9:00 a 18:00 hs</p>
+                </div>
               </div>
             </div>
           </div>
@@ -63,16 +64,16 @@ function Contacto() {
             <form>
               <div className="form-row">
                 <div className="campo">
-                  <label htmlFor="nombre">Nombre</label>
+                  <label htmlFor="nombre">Nombre y Apellido</label>
                   <input
                     type="text"
                     id="nombre"
-                    placeholder="Tu nombre"
+                    placeholder="Ej: María Pérez"
                   />
                 </div>
 
                 <div className="campo">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">Correo Electrónico</label>
                   <input
                     type="email"
                     id="email"
@@ -82,7 +83,7 @@ function Contacto() {
               </div>
 
               <div className="campo">
-                <label htmlFor="asunto">Asunto</label>
+                <label htmlFor="asunto">Asunto / Motivo</label>
                 <input
                   type="text"
                   id="asunto"
@@ -94,8 +95,8 @@ function Contacto() {
                 <label htmlFor="mensaje">Mensaje</label>
                 <textarea
                   id="mensaje"
-                  rows="6"
-                  placeholder="Escribí tu mensaje..."
+                  rows="5"
+                  placeholder="Escribí tu consulta con confianza..."
                 ></textarea>
               </div>
 
@@ -110,7 +111,7 @@ function Contacto() {
 
       {/* PIE DE PÁGINA */}
       <footer className="contacto-footer">
-        <p>© 2026 Mi Sitio. Todos los derechos reservados.</p>
+        <p>© 2026 Clínica. Todos los derechos reservados.</p>
       </footer>
 
     </div>
