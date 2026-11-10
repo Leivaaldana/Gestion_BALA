@@ -1,20 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeader from "../../componentes/PageHeader";
-
-const indicacionesIniciales = [
-  { id: 1, paciente: "Juana Martínez", medicamento: "Ibuprofeno 400mg", hora: "10:00", administrado: false },
-  { id: 2, paciente: "Carlos Gómez", medicamento: "Suero fisiológico", hora: "10:30", administrado: false },
-  { id: 3, paciente: "Ana Ríos", medicamento: "Amoxicilina 500mg", hora: "11:00", administrado: true },
-];
+import { useAuth } from "../../context/AuthContext";
+import { registrarAuditoria } from "../../servicios/historias";
+import { escucharIndicaciones, marcarAdministrada } from "../../servicios/prescripciones";
 
 export default function SuministroMedicacion() {
-  const [indicaciones, setIndicaciones] = useState(indicacionesIniciales);
+  const { user } = useAuth();
+  const [indicaciones, setIndicaciones] = useState([]);
 
-  const toggle = (id) => {
-    setIndicaciones((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, administrado: !item.administrado } : item
-      )
+  useEffect(() => escucharIndicaciones(setIndicaciones), []);
+
+  const toggle = async (item) => {
+    const nuevo = !item.administrado;
+    await marcarAdministrada(item.id, nuevo, user);
+    registrarAuditoria(
+      user,
+      nuevo ? "Administró medicación" : "Revirtió administración",
+      `Paciente #${item.pacienteDni}`
     );
   };
 
@@ -26,6 +28,9 @@ export default function SuministroMedicacion() {
       />
 
       <div className="panel-card">
+        {indicaciones.length === 0 && (
+          <p className="text-muted mb-0">No hay indicaciones pendientes.</p>
+        )}
         {indicaciones.map((item) => (
           <div className="check-row" key={item.id}>
             <div className="form-check">
@@ -34,10 +39,15 @@ export default function SuministroMedicacion() {
                 type="checkbox"
                 id={`ind-${item.id}`}
                 checked={item.administrado}
-                onChange={() => toggle(item.id)}
+                onChange={() => toggle(item)}
               />
               <label className="form-check-label" htmlFor={`ind-${item.id}`}>
-                <strong>{item.paciente}</strong> — {item.medicamento} ({item.hora})
+                <strong>{item.pacienteNombre}</strong> — {item.medicamento} × {item.cantidad}
+                <br />
+                <small className="text-muted">{item.indicaciones}</small>
+                {item.administrado && item.administradoPor && (
+                  <small className="text-muted"> · Administró: {item.administradoPor}</small>
+                )}
               </label>
             </div>
             <span className={`badge-estado ${item.administrado ? "badge-success" : "badge-warning"}`}>

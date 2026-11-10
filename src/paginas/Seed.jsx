@@ -3,9 +3,23 @@ import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { USUARIOS_INICIALES } from "../datos/usuarios";
+import { MEDICAMENTOS } from "../datos/medicamentos";
 
 export default function Seed() {
   const [log, setLog] = useState([]);
+
+  const sembrarMedicamentos = async () => {
+  const out = [];
+  for (const { id, ...m } of MEDICAMENTOS) {
+    try {
+      await setDoc(doc(db, "medicamentos", id), m);
+      out.push(`✔ ${m.nombre}`);
+    } catch (e) {
+      out.push(`✖ ${m.nombre}: ${e.code || e.message}`);
+    }
+    setLog([...out]);
+  }
+};
 
   const sembrar = async () => {
   const out = [];
@@ -31,6 +45,9 @@ export default function Seed() {
     <div className="container py-5">
       <h1>Sembrar usuarios de prueba</h1>
       <button className="btn btn-dusty my-3" onClick={sembrar}>Crear usuarios</button>
+        <button className="btn btn-outline-midnight my-3 ms-2" onClick={sembrarMedicamentos}>
+            Cargar medicamentos
+        </button>   
       <pre>{log.join("\n")}</pre>
     </div>
   );
