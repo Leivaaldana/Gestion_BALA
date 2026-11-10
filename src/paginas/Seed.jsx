@@ -8,21 +8,24 @@ export default function Seed() {
   const [log, setLog] = useState([]);
 
   const sembrar = async () => {
-    const out = [];
-    for (const u of USUARIOS_INICIALES) {
+  const out = [];
+  for (const u of USUARIOS_INICIALES) {
+    try {
       try {
         await createUserWithEmailAndPassword(auth, `${u.dni}@bala.app`, u.contrasena);
-        await setDoc(doc(db, "usuarios", u.dni), {
-          dni: u.dni, nombre: u.nombre, apellido: u.apellido, email: u.email, rol: u.rol,
-        });
-        out.push(`✔ ${u.rol} (${u.dni})`);
       } catch (e) {
-        out.push(`✖ ${u.rol} (${u.dni}): ${e.code}`);
+        if (e.code !== "auth/email-already-in-use") throw e;
       }
-      setLog([...out]);
+      const { id, contrasena, ...perfil } = u;
+      await setDoc(doc(db, "usuarios", u.dni), perfil, { merge: true });
+      out.push(`✔ ${u.rol} (${u.dni})`);
+    } catch (e) {
+      out.push(`✖ ${u.rol} (${u.dni}): ${e.code || e.message}`);
     }
-    await signOut(auth);
-  };
+    setLog([...out]);
+  }
+  await signOut(auth);
+};
 
   return (
     <div className="container py-5">
