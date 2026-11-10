@@ -13,6 +13,7 @@ const ESTADO_CLASSES = {
   Pendiente: "badge-estado badge-warning",
   Confirmado: "badge-estado badge-info",
   Atendido: "badge-estado badge-success",
+  Respondido: "badge-estado badge-success",
   Cancelado: "badge-estado badge-danger",
   Ausente: "badge-estado badge-muted",
   Disponible: "badge-estado badge-success",

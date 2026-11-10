@@ -36,6 +36,7 @@ import GestionInsumos from "./paginas/enfermera/GestionInsumos.jsx";
 import RegistroAltas from "./paginas/administrativo/RegistroAltas.jsx";
 import GestionCamas from "./paginas/administrativo/GestionCamas.jsx";
 import GestionAgenda from "./paginas/administrativo/GestionAgenda.jsx";
+import GestionReclamos from "./paginas/administrativo/GestionReclamos.jsx";
 
 // Directivos
 import PanelRecursos from "./paginas/directivos/PanelRecursos.jsx";
@@ -97,6 +98,7 @@ function App() {
             <Route path="/administrativo/altas" element={<RegistroAltas />} />
             <Route path="/administrativo/camas" element={<GestionCamas />} />
             <Route path="/administrativo/agenda" element={<GestionAgenda />} />
+            <Route path="/administrativo/reclamos" element={<GestionReclamos />} />
           </Route>
         </Route>
 
