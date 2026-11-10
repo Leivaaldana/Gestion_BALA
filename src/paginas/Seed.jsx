@@ -40,7 +40,7 @@ export default function Seed() {
   for (const u of USUARIOS_INICIALES) {
     try {
       try {
-        await createUserWithEmailAndPassword(auth, `${u.dni}@bala.app`, u.contrasena);
+        await createUserWithEmailAndPassword(auth, u.email.trim().toLowerCase(), u.contrasena);
       } catch (e) {
         if (e.code !== "auth/email-already-in-use") throw e;
       }

@@ -6,20 +6,24 @@ import "../estilos/Login.css";
 
 export default function Login() {
   const [dni, setDni] = useState("");
-const [contrasena, setContrasena] = useState("");
-const [error, setError] = useState("");
-const { login } = useAuth();
-const navigate = useNavigate();
+  const [contrasena, setContrasena] = useState("");
+  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const res = await login(dni, contrasena);
-  if (!res.ok) {
-    setError(res.error);
-    return;
-  }
-  navigate(ROLE_HOME[res.rol]);
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setCargando(true);
+    const res = await login(dni, contrasena);
+    setCargando(false);
+    if (!res.ok) {
+      setError(res.error);
+      return;
+    }
+    navigate(ROLE_HOME[res.rol]);
+  };
   return (
     <div className="auth-split">
       <div className="auth-visual d-none d-lg-flex">
@@ -96,8 +100,8 @@ const handleSubmit = async (e) => {
               </div>
   )}
 
-  <button type="submit" className="btn btn-dusty w-100 btn-lg mb-4">
-    Iniciar sesión
+  <button type="submit" className="btn btn-dusty w-100 btn-lg mb-4" disabled={cargando}>
+    {cargando ? "Ingresando…" : "Iniciar sesión"}
   </button>
 
   <p className="text-center mb-0 small">
