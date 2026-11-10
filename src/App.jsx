@@ -15,6 +15,9 @@ import Login from "./paginas/Login.jsx";
 import RecuperarContrasena from "./paginas/RecuperarContrasena.jsx";
 import Registro from "./paginas/Registro.jsx"; // ajustá si tu archivo se llama distinto
 import Contacto from "./paginas/Contactos.jsx";
+import Asistencia from "./paginas/Asistencia.jsx";
+import Anuncios from "./paginas/Anuncios.jsx";
+import Equipo from "./paginas/Equipo.jsx";
 
 // Paciente
 import MiHistorialClinico from "./paginas/paciente/MiHistorialClinico.jsx";
@@ -56,7 +59,9 @@ function App() {
         <Route path="/seed" element={<Seed />} />
         <Route path="/" element={<Principal />} />
         <Route path="/contacto" element={<Contacto />} />
-        {/* Más adelante: /equipo, /anuncios, /asistencia */}
+        <Route path="/equipo" element={<Equipo />} />
+        <Route path="/anuncios" element={<Anuncios />} />
+        <Route path="/asistencia" element={<Asistencia />} />
 
         {/* Solo sin sesión: si ya iniciaste, te manda a tu panel */}
         <Route element={<SoloInvitados />}>
