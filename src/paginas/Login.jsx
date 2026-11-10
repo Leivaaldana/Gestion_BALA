@@ -11,9 +11,9 @@ const [error, setError] = useState("");
 const { login } = useAuth();
 const navigate = useNavigate();
 
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
-  const res = login(dni, contrasena);
+  const res = await login(dni, contrasena);
   if (!res.ok) {
     setError(res.error);
     return;
