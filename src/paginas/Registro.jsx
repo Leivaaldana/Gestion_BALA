@@ -54,30 +54,30 @@ function FormularioRegistro() {
     return nuevos;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const nuevos = validar();
-    if (Object.keys(nuevos).length > 0) {
-      setErrores(nuevos);
-      return;
-    }
+  const nuevos = validar();
+  if (Object.keys(nuevos).length > 0) {
+    setErrores(nuevos);
+    return;
+  }
 
-    const res = registrar({
-      dni: datos.dni,
-      nombre: datos.nombre,
-      apellido: datos.apellido,
-      email: datos.correo,
-      contrasena: datos.contrasena,
-    });
+  const res = await registrar({
+    dni: datos.dni,
+    nombre: datos.nombre,
+    apellido: datos.apellido,
+    email: datos.correo,
+    contrasena: datos.contrasena,
+  });
 
-    if (!res.ok) {
-      setErrores({ general: res.error });
-      return;
-    }
+  if (!res.ok) {
+    setErrores({ general: res.error });
+    return;
+  }
 
-    navigate(ROLE_HOME[res.rol]);
-  };
+  navigate(ROLE_HOME[res.rol]);
+};
 
   return (
     <div className="registro-container">

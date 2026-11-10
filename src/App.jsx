@@ -40,6 +40,8 @@ import GestionAgenda from "./paginas/administrativo/GestionAgenda.jsx";
 import PanelRecursos from "./paginas/directivos/PanelRecursos.jsx";
 import AnalisisDatos from "./paginas/directivos/AnalisisDatos.jsx";
 import SupervisionAuditoria from "./paginas/directivos/SupervisionAuditoria.jsx";
+import Seed from "./paginas/Seed.jsx";
+
 
 function App() {
   return (
@@ -48,6 +50,7 @@ function App() {
 
       <Routes>
         {/* Públicas (se ven con o sin sesión) */}
+        <Route path="/seed" element={<Seed />} />
         <Route path="/" element={<Principal />} />
         <Route path="/contacto" element={<Contacto />} />
         {/* Más adelante: /equipo, /anuncios, /asistencia */}
