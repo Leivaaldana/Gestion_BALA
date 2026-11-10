@@ -42,6 +42,7 @@ import GestionReclamos from "./paginas/administrativo/GestionReclamos.jsx";
 import PanelRecursos from "./paginas/directivos/PanelRecursos.jsx";
 import AnalisisDatos from "./paginas/directivos/AnalisisDatos.jsx";
 import SupervisionAuditoria from "./paginas/directivos/SupervisionAuditoria.jsx";
+import Perfil from "./paginas/Perfil.jsx";
 import Seed from "./paginas/Seed.jsx";
 
 
@@ -70,6 +71,7 @@ function App() {
             <Route path="/paciente/historial" element={<MiHistorialClinico />} />
             <Route path="/paciente/turnos" element={<Turnos />} />
             <Route path="/paciente/estudios" element={<RepositorioEstudios />} />
+            <Route path="/paciente/perfil" element={<Perfil />} />
           </Route>
         </Route>
 
@@ -80,6 +82,7 @@ function App() {
             <Route path="/medico/guardias" element={<ControlGuardias />} />
             <Route path="/medico/derivacion" element={<DerivacionInternacion />} />
             <Route path="/medico/prescripciones" element={<SistemaPrescripciones />} />
+            <Route path="/medico/perfil" element={<Perfil />} />
           </Route>
         </Route>
 
@@ -89,6 +92,7 @@ function App() {
             <Route path="/enfermera/medicacion" element={<SuministroMedicacion />} />
             <Route path="/enfermera/guardias" element={<ControlGuardiasEnfermera />} />
             <Route path="/enfermera/insumos" element={<GestionInsumos />} />
+            <Route path="/enfermera/perfil" element={<Perfil />} />
           </Route>
         </Route>
 
@@ -99,6 +103,7 @@ function App() {
             <Route path="/administrativo/camas" element={<GestionCamas />} />
             <Route path="/administrativo/agenda" element={<GestionAgenda />} />
             <Route path="/administrativo/reclamos" element={<GestionReclamos />} />
+            <Route path="/administrativo/perfil" element={<Perfil />} />
           </Route>
         </Route>
 
@@ -108,6 +113,7 @@ function App() {
             <Route path="/directivos/recursos" element={<PanelRecursos />} />
             <Route path="/directivos/analisis" element={<AnalisisDatos />} />
             <Route path="/directivos/auditoria" element={<SupervisionAuditoria />} />
+            <Route path="/directivos/perfil" element={<Perfil />} />
           </Route>
         </Route>
       </Routes>

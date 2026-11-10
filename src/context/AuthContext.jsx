@@ -39,6 +39,20 @@ async function buscarPerfilPorCuenta(cuenta) {
   return perfiles.empty ? null : perfiles.docs[0].data();
 }
 
+async function armarSesion(perfil) {
+  const foto = await getDoc(doc(db, "fotos_perfil", perfil.dni));
+  return {
+    dni: perfil.dni,
+    rol: perfil.rol,
+    nombre: `${perfil.nombre} ${perfil.apellido}`,
+    nombrePila: perfil.nombre,
+    apellido: perfil.apellido,
+    email: perfil.email,
+    especialidad: perfil.especialidad || "",
+    fotoPerfil: foto.exists() ? foto.data().fotoPerfil : "",
+  };
+}
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -56,7 +70,7 @@ export function AuthProvider({ children }) {
       }
       try {
         const perfil = await buscarPerfilPorCuenta(fbUser);
-        setUser(perfil ? armarSesion(perfil) : null);
+        setUser(perfil ? await armarSesion(perfil) : null);
       } catch {
         setUser(null);
       }
@@ -64,12 +78,6 @@ export function AuthProvider({ children }) {
     });
     return cancelar;
   }, []);
-
-  const armarSesion = (u) => ({
-    dni: u.dni,
-    rol: u.rol,
-    nombre: `${u.nombre} ${u.apellido}`,
-  });
 
   // Devuelve { ok: true, rol } o { ok: false, error }
   const login = async (identificador, contrasena) => {
@@ -102,7 +110,7 @@ export function AuthProvider({ children }) {
         }
       }
 
-      const sesion = armarSesion(perfil);
+      const sesion = await armarSesion(perfil);
       setUser(sesion);
       return { ok: true, rol: sesion.rol };
     } catch (e) {
@@ -143,6 +151,19 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const actualizarFotoPerfil = async (fotoPerfil) => {
+    if (!user?.dni) throw new Error("No hay una sesión activa.");
+    if (typeof fotoPerfil !== "string" || fotoPerfil.length > 250000)
+      throw new Error("La imagen excede el tamaño permitido.");
+
+    await setDoc(
+      doc(db, "fotos_perfil", user.dni),
+      { fotoPerfil },
+      { merge: true }
+    );
+    setUser((actual) => ({ ...actual, fotoPerfil }));
+  };
+
   // Solo registra pacientes (el resto de roles los carga la administración)
   const registrar = async ({ dni, nombre, apellido, email, contrasena }) => {
     const emailNorm = email.trim().toLowerCase();
@@ -170,7 +191,7 @@ export function AuthProvider({ children }) {
       await setDoc(doc(db, "usuarios", perfil.dni), perfil);
       cuentaCreada = null;
 
-      const sesion = armarSesion(perfil);
+      const sesion = await armarSesion(perfil);
       setUser(sesion);
       return { ok: true, rol: "paciente" };
     } catch (e) {
@@ -197,7 +218,9 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, registrar, recuperarContrasena }}>
+    <AuthContext.Provider value={{
+      user, login, logout, registrar, recuperarContrasena, actualizarFotoPerfil,
+    }}>
       {!cargando && children}
     </AuthContext.Provider>
   );
