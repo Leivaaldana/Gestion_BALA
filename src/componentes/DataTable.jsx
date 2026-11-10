@@ -1,4 +1,6 @@
 const ESTADO_CLASSES = {
+  Asignada: "badge-estado badge-success",
+  Registrada: "badge-estado badge-info",
   "En espera": "badge-estado badge-warning",
   "En atención": "badge-estado badge-info",
   Vencido: "badge-estado badge-danger",

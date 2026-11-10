@@ -4,9 +4,23 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { USUARIOS_INICIALES } from "../datos/usuarios";
 import { MEDICAMENTOS } from "../datos/medicamentos";
+import { HABITACIONES } from "../datos/habitaciones";
 
 export default function Seed() {
   const [log, setLog] = useState([]);
+
+  const sembrarHabitaciones = async () => {
+  const out = [];
+  for (const { id, ...h } of HABITACIONES) {
+    try {
+      await setDoc(doc(db, "habitaciones", id), h);
+      out.push(`✔ Hab. ${h.numero}`);
+    } catch (e) {
+      out.push(`✖ Hab. ${h.numero}: ${e.code || e.message}`);
+    }
+    setLog([...out]);
+  }
+};
 
   const sembrarMedicamentos = async () => {
   const out = [];
@@ -45,6 +59,9 @@ export default function Seed() {
     <div className="container py-5">
       <h1>Sembrar usuarios de prueba</h1>
       <button className="btn btn-dusty my-3" onClick={sembrar}>Crear usuarios</button>
+      <button className="btn btn-outline-midnight my-3 ms-2" onClick={sembrarHabitaciones}>
+          Cargar habitaciones
+      </button>
         <button className="btn btn-outline-midnight my-3 ms-2" onClick={sembrarMedicamentos}>
             Cargar medicamentos
         </button>   
