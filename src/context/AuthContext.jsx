@@ -4,6 +4,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
+  updateEmail,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, getDocs, query, where, collection } from "firebase/firestore";
 import { auth, db } from "../firebase";
@@ -16,7 +18,7 @@ export const ROLE_HOME = {
   directivos: "/directivos/recursos",
 };
 
-// Firebase Auth pide un email: usamos el DNI como email interno
+// Se conserva para permitir el acceso a cuentas creadas antes de usar el correo real.
 const emailInterno = (dni) => `${dni.trim()}@bala.app`;
 
 const AuthContext = createContext(null);
@@ -35,9 +37,17 @@ export function AuthProvider({ children }) {
         return;
       }
       try {
-        const dni = fbUser.email.split("@")[0];
-        const snap = await getDoc(doc(db, "usuarios", dni));
-        setUser(snap.exists() ? armarSesion(snap.data()) : null);
+        const correo = fbUser.email?.trim().toLowerCase() || "";
+        if (correo.endsWith("@bala.app")) {
+          const dni = correo.split("@")[0];
+          const snap = await getDoc(doc(db, "usuarios", dni));
+          setUser(snap.exists() ? armarSesion(snap.data()) : null);
+        } else {
+          const perfiles = await getDocs(
+            query(collection(db, "usuarios"), where("email", "==", correo))
+          );
+          setUser(perfiles.empty ? null : armarSesion(perfiles.docs[0].data()));
+        }
       } catch {
         setUser(null);
       }
@@ -55,17 +65,76 @@ export function AuthProvider({ children }) {
   // Devuelve { ok: true, rol } o { ok: false, error }
   const login = async (dni, contrasena) => {
     try {
-      const cred = await signInWithEmailAndPassword(auth, emailInterno(dni), contrasena);
-      const snap = await getDoc(doc(db, "usuarios", dni.trim()));
+      const dniNormalizado = dni.trim();
+      const snap = await getDoc(doc(db, "usuarios", dniNormalizado));
       if (!snap.exists()) {
-        await signOut(auth);
         return { ok: false, error: "Tu cuenta no tiene un perfil asignado." };
       }
-      const sesion = armarSesion(snap.data());
+      const perfil = snap.data();
+      const correo = perfil.email?.trim().toLowerCase();
+      let cred;
+      let cuentaAnterior = false;
+
+      if (correo) {
+        try {
+          cred = await signInWithEmailAndPassword(auth, correo, contrasena);
+        } catch (e) {
+          if (e.code !== "auth/user-not-found" && e.code !== "auth/invalid-credential") throw e;
+          cred = await signInWithEmailAndPassword(auth, emailInterno(dniNormalizado), contrasena);
+          cuentaAnterior = true;
+        }
+      } else {
+        cred = await signInWithEmailAndPassword(auth, emailInterno(dniNormalizado), contrasena);
+      }
+
+      if (cuentaAnterior && correo) {
+        try {
+          await updateEmail(cred.user, correo);
+        } catch (e) {
+          await signOut(auth);
+          if (e.code === "auth/email-already-in-use") {
+            return {
+              ok: false,
+              error: "Ese correo ya está asociado a otra cuenta de Firebase. Contactá a administración para revisar tus datos.",
+            };
+          }
+          return {
+            ok: false,
+            error: "No se pudo actualizar el correo de tu cuenta para habilitar la recuperación. Probá de nuevo o contactá a administración.",
+          };
+        }
+      }
+
+      const sesion = armarSesion(perfil);
       setUser(sesion);
       return { ok: true, rol: sesion.rol };
     } catch (e) {
+      if (e.code === "auth/network-request-failed")
+        return { ok: false, error: "No se pudo conectar con Firebase. Revisá tu conexión e intentá de nuevo." };
       return { ok: false, error: "DNI o contraseña incorrectos." };
+    }
+  };
+
+  const recuperarContrasena = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email.trim().toLowerCase(), {
+        url: `${window.location.origin}/login`,
+        handleCodeInApp: false,
+      });
+      return { ok: true };
+    } catch (e) {
+      if (e.code === "auth/user-not-found") return { ok: true };
+      if (e.code === "auth/too-many-requests")
+        return { ok: false, error: "Se realizaron demasiados intentos. Esperá un momento antes de volver a probar." };
+      if (e.code === "auth/network-request-failed")
+        return { ok: false, error: "No se pudo conectar con Firebase. Revisá tu conexión e intentá de nuevo." };
+      if (e.code === "auth/operation-not-allowed")
+        return { ok: false, error: "La recuperación por correo no está habilitada en Firebase Authentication." };
+      if (e.code === "auth/unauthorized-continue-uri" || e.code === "auth/invalid-continue-uri")
+        return { ok: false, error: "El dominio de esta aplicación no está autorizado en Firebase Authentication." };
+      if (e.code === "auth/invalid-email")
+        return { ok: false, error: "Ingresá una dirección de correo válida." };
+      return { ok: false, error: "No se pudo enviar el correo de recuperación. Intentá de nuevo más tarde." };
     }
   };
 
@@ -77,7 +146,7 @@ export function AuthProvider({ children }) {
       const dup = await getDocs(query(collection(db, "usuarios"), where("email", "==", emailNorm)));
       if (!dup.empty) return { ok: false, error: "Ya existe una cuenta con ese correo." };
 
-      await createUserWithEmailAndPassword(auth, emailInterno(dni), contrasena);
+      await createUserWithEmailAndPassword(auth, emailNorm, contrasena);
 
       const perfil = {
         dni: dni.trim(),
@@ -93,7 +162,7 @@ export function AuthProvider({ children }) {
       return { ok: true, rol: "paciente" };
     } catch (e) {
       if (e.code === "auth/email-already-in-use")
-        return { ok: false, error: "Ya existe una cuenta con ese DNI." };
+        return { ok: false, error: "Ese correo ya está asociado a una cuenta." };
       if (e.code === "auth/weak-password")
         return { ok: false, error: "La contraseña es muy débil." };
       return { ok: false, error: "No se pudo crear la cuenta. Probá de nuevo." };
@@ -108,7 +177,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, registrar }}>
+    <AuthContext.Provider value={{ user, login, logout, registrar, recuperarContrasena }}>
       {!cargando && children}
     </AuthContext.Provider>
   );

@@ -12,6 +12,7 @@ import SoloInvitados from "./componentes/SoloInvitados.jsx";
 // Páginas públicas
 import Principal from "./paginas/Principal.jsx";
 import Login from "./paginas/Login.jsx";
+import RecuperarContrasena from "./paginas/RecuperarContrasena.jsx";
 import Registro from "./paginas/Registro.jsx"; // ajustá si tu archivo se llama distinto
 import Contacto from "./paginas/Contactos.jsx";
 
@@ -58,6 +59,7 @@ function App() {
         {/* Solo sin sesión: si ya iniciaste, te manda a tu panel */}
         <Route element={<SoloInvitados />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
           <Route path="/registro" element={<Registro />} />
         </Route>
 
