@@ -33,18 +33,22 @@ export const registrarIngreso = (datos, user) =>
   });
 
 // Activos primero; dentro de cada grupo, por urgencia y luego por orden de llegada
-export function escucharGuardia(callback) {
-  return onSnapshot(collection(db, "guardia"), (snap) => {
-    const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    const activo = (g) => (g.estado === "Atendido" ? 1 : 0);
-    lista.sort(
-      (a, b) =>
-        activo(a) - activo(b) ||
-        ORDEN[a.prioridad] - ORDEN[b.prioridad] ||
-        (a.creadoEn?.seconds ?? Infinity) - (b.creadoEn?.seconds ?? Infinity)
-    );
-    callback(lista);
-  });
+export function escucharGuardia(callback, onError) {
+  return onSnapshot(
+    collection(db, "guardia"),
+    (snap) => {
+      const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      const activo = (g) => (g.estado === "Atendido" ? 1 : 0);
+      lista.sort(
+        (a, b) =>
+          activo(a) - activo(b) ||
+          ORDEN[a.prioridad] - ORDEN[b.prioridad] ||
+          (a.creadoEn?.seconds ?? Infinity) - (b.creadoEn?.seconds ?? Infinity)
+      );
+      callback(lista);
+    },
+    onError
+  );
 }
 
 export const cambiarEstadoGuardia = (id, estado, extra = {}) =>

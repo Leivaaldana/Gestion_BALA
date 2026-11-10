@@ -9,12 +9,16 @@ export const SECTORES = ["Internación", "Terapia intensiva", "Guardia", "Matern
 
 export class ErrorCama extends Error {}
 
-export function escucharHabitaciones(callback) {
-  return onSnapshot(collection(db, "habitaciones"), (snap) => {
-    const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    lista.sort((a, b) => a.piso - b.piso || a.numero - b.numero);
-    callback(lista);
-  });
+export function escucharHabitaciones(callback, onError) {
+  return onSnapshot(
+    collection(db, "habitaciones"),
+    (snap) => {
+      const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      lista.sort((a, b) => a.piso - b.piso || a.numero - b.numero);
+      callback(lista);
+    },
+    onError
+  );
 }
 
 export const emitirOrden = (datos, user) =>

@@ -38,14 +38,18 @@ export async function reservarTurno(t) {
 }
 
 // Tiempo real. Sin filtro trae todos; con filtro { campo, valor } solo los que coinciden.
-export function escucharTurnos(callback, filtro) {
+export function escucharTurnos(callback, filtro, onError) {
   const base = collection(db, "turnos");
   const q = filtro ? query(base, where(filtro.campo, "==", filtro.valor)) : base;
-  return onSnapshot(q, (snap) => {
-    const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    lista.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
-    callback(lista);
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      lista.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+      callback(lista);
+    },
+    onError
+  );
 }
 
 export const cambiarEstadoTurno = (id, estado) =>
