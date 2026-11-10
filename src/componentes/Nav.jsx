@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
 import "../estilos/Nav.css";
@@ -27,7 +27,19 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
-  // Los hooks van siempre arriba; recién acá decidimos si se dibuja
+  const navRef = useRef(null);
+
+// Mide el alto real del header para que el sidebar se pegue exacto debajo
+useLayoutEffect(() => {
+  const el = navRef.current;
+  if (!el) return;
+  const medir = () =>
+    document.documentElement.style.setProperty("--nav-h", `${el.getBoundingClientRect().height}px`);
+  medir();
+  const ro = new ResizeObserver(medir);
+  ro.observe(el);
+  return () => ro.disconnect();
+}, [oculto]);
   if (oculto) return null;
 
   const handleLogout = () => {
@@ -43,7 +55,8 @@ export default function Nav() {
   if (isHome && !scrolled) classes.push("site-nav--top");
 
   return (
-    <nav className={classes.join(" ")}>
+    <>
+    <nav ref={navRef} className={classes.join(" ")}>
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center gap-2 fw-bold" to="/">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-dusty" xmlns="http://www.w3.org/2000/svg">
@@ -94,5 +107,7 @@ export default function Nav() {
         </div>
       </div>
     </nav>
+    {!isHome && <div className="nav-spacer" aria-hidden="true" />}
+  </>
   );
 }

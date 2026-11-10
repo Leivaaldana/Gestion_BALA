@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const MENUS = {
   paciente: [
@@ -37,13 +38,26 @@ const ROLE_LABELS = {
   directivos: "Directivo/a",
 };
 
-// La marca y "Cerrar sesión" ahora viven en el header global
 export default function Sidebar({ role }) {
+  const { user } = useAuth();
   const items = MENUS[role] || [];
+  const iniciales = (user?.nombre || "?")
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
     <aside className="sidebar d-flex flex-column">
-      <p className="sidebar-role">{ROLE_LABELS[role] || "Usuario"}</p>
+      <div className="sidebar-user">
+        <span className="sidebar-avatar">{iniciales}</span>
+        <div>
+          <p className="sidebar-user-name">{user?.nombre}</p>
+          <p className="sidebar-role">{ROLE_LABELS[role] || "Usuario"}</p>
+        </div>
+      </div>
+
       <nav className="sidebar-nav flex-grow-1">
         {items.map((item) => (
           <NavLink

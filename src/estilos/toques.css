@@ -1,0 +1,290 @@
+/* Lenguaje "brutalismo urbano" para las páginas públicas.
+   Va como último import en main.jsx. Para desactivarlo, borrá ese import. */
+
+:root {
+  --tq-navy: #0f1a2b;
+  --tq-bd: 2px solid #0f1a2b;
+  --tq-title: "Anton", Impact, "Arial Narrow", sans-serif;
+  --tq-mono: "Space Mono", ui-monospace, Consolas, monospace;
+}
+
+/* ================= INICIO ================= */
+
+.home .hero-title {
+  font-family: var(--tq-title);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 1;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+}
+
+/* botones del hero: planos, con borde claro; al pasar el mouse se invierten */
+.home .BotonP {
+  border: 2px solid var(--ivory, #bdc4d4);
+  box-shadow: none;
+  font-family: var(--tq-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.home .BotonP:hover,
+.home .BotonP:focus-visible {
+  background-color: var(--ivory, #bdc4d4);
+  border-color: var(--ivory, #bdc4d4);
+  color: var(--tq-navy);
+}
+
+/* tarjetas numeradas con cifras grandes */
+.home .row-cols-md-3 { counter-reset: pilar; }
+
+.home .pillar,
+.home .pillar.pillar-border {
+  counter-increment: pilar;
+  padding: 1.5rem;
+  background: #efede8;
+  border: var(--tq-bd);
+  border-radius: 0;
+  box-shadow: none;
+  transition: background 0.12s ease;
+}
+.home .pillar::before {
+  content: counter(pilar, decimal-leading-zero);
+  display: block;
+  font-family: var(--tq-title);
+  font-size: 3.6rem;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--tq-navy);
+  margin-bottom: 0.6rem;
+}
+.home .pillar-label {
+  display: inline-block;
+  font-family: var(--tq-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.1rem 0.5rem;
+  border: 2px solid currentColor;
+  border-radius: 0;
+}
+.home .pillar h2 {
+  font-family: var(--tq-title);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  line-height: 1.05;
+}
+.home .pillar:hover { background: var(--tq-navy); }
+.home .pillar:hover::before { -webkit-text-stroke-color: var(--ivory, #bdc4d4); }
+.home .pillar:hover .pillar-label { color: var(--ivory, #bdc4d4); }
+.home .pillar:hover .text-midnight { color: #fff !important; }
+.home .pillar:hover .text-navy-70 {
+  color: var(--buttercream, #d1cfc9) !important;
+  opacity: 1;
+}
+
+/* ================= LOGIN ================= */
+
+.auth-title {
+  font-family: var(--tq-title);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 2.8rem;
+  line-height: 1;
+  letter-spacing: 0.005em;
+}
+.auth-form-panel .form-label {
+  font-family: var(--tq-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.auth-form-panel .auth-input {
+  border: var(--tq-bd);
+  border-radius: 0;
+  background-color: #f7f6f2;
+}
+.auth-form-panel .auth-input:focus {
+  border-color: var(--tq-navy);
+  box-shadow: none;
+  outline: 3px solid var(--dusty, #52677d);
+}
+.auth-form-panel .btn-dusty {
+  background-color: var(--tq-navy);
+  border: var(--tq-bd);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--tq-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.auth-form-panel .btn-dusty:hover,
+.auth-form-panel .btn-dusty:focus-visible {
+  background-color: #f7f6f2;
+  color: var(--tq-navy);
+}
+.auth-form-panel .alert {
+  border: var(--tq-bd);
+  border-left-width: 10px;
+  border-radius: 0;
+  background: #f7f6f2;
+  color: var(--tq-navy);
+}
+.auth-visual-quote {
+  border-left: 4px solid var(--buttercream, #d1cfc9);
+}
+.auth-visual-quote p {
+  font-family: var(--tq-title);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 1.9rem;
+  line-height: 1.1;
+}
+
+/* ================= REGISTRO ================= */
+
+.registro-box {
+  border: var(--tq-bd);
+  border-radius: 0;
+  box-shadow: none;
+  border-top: 10px solid var(--tq-navy);
+}
+.registro-box h1 {
+  font-family: var(--tq-title);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 2.6rem;
+  line-height: 1;
+  letter-spacing: 0.005em;
+}
+.registro-box .campo label {
+  font-family: var(--tq-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.registro-box .campo input {
+  border: var(--tq-bd);
+  border-radius: 0;
+  background: #f7f6f2;
+}
+.registro-box .campo input:focus {
+  box-shadow: none;
+  outline: 3px solid var(--dusty, #52677d);
+}
+.registro-box button[type="submit"] {
+  border: var(--tq-bd);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  font-family: var(--tq-mono);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.registro-box button[type="submit"]:hover,
+.registro-box button[type="submit"]:focus-visible,
+.registro-box button[type="submit"]:active {
+  background: #f7f6f2;
+  color: var(--tq-navy);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ================= CONTACTO ================= */
+
+.contacto-intro h1 {
+  font-family: var(--tq-title);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(2.8rem, 7vw, 5.2rem);
+  line-height: 1;
+  letter-spacing: 0.005em;
+  margin-bottom: 1rem;
+}
+.contacto-intro p {
+  font-family: var(--tq-mono);
+  font-size: 0.85rem;
+}
+
+.contacto-info,
+.contacto-form {
+  border: var(--tq-bd);
+  border-radius: 0;
+  box-shadow: none;
+}
+.contacto-info h2,
+.contacto-form h2 {
+  font-family: var(--tq-title);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 1.8rem;
+  letter-spacing: 0.01em;
+}
+.contacto-info .icono {
+  border: 2px solid var(--ivory, #bdc4d4);
+  border-radius: 0;
+  box-shadow: none;
+}
+.contacto-info .info-item h3 {
+  font-family: var(--tq-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.contacto-form .campo label {
+  font-family: var(--tq-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+.contacto-form .campo input,
+.contacto-form .campo textarea {
+  border: var(--tq-bd);
+  border-radius: 0;
+  background-color: #f7f6f2;
+}
+.contacto-form .campo input:focus,
+.contacto-form .campo textarea:focus {
+  background-color: #fff;
+  border-color: var(--tq-navy);
+  box-shadow: none;
+  outline: 3px solid var(--dusty, #52677d);
+}
+
+.contacto-form button[type="submit"] {
+  border: var(--tq-bd);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  font-family: var(--tq-mono);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.contacto-form button[type="submit"]:hover,
+.contacto-form button[type="submit"]:focus-visible,
+.contacto-form button[type="submit"]:active {
+  background-color: #f7f6f2;
+  color: var(--tq-navy);
+  transform: none;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home .BotonP,
+  .home .pillar,
+  .auth-form-panel .btn-dusty,
+  .registro-box button[type="submit"],
+  .contacto-form button[type="submit"] { transition: none; }
+}

@@ -1,6 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=Sora:wght@600;700&display=swap");
-
-:root {
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&family=Sora:wght@600;700;800&family=Space+Mono:wght@400;700&family=Anton&display=swap");:root {
   --midnight: #1c2e4a;
   --dusty: #52677d;
   --ivory: #bdc4d4;
@@ -11,15 +9,17 @@
   --font-display: "Sora", system-ui, sans-serif;
 
   --nav-h: 72px;       /* alto aproximado del header */
-  --btn-radius: 8px;   /* ← cambiá este valor para redondear más o menos los botones del header */
+  --btn-radius: 0;   /* ← cambiá este valor para redondear más o menos los botones del header */
 }
 
 /* ---------- Header ---------- */
 .site-nav {
   font-family: var(--font-body);
   background-color: var(--navy);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1030;
   transition: background-color 0.3s ease;
 }
@@ -123,4 +123,21 @@
 
 @media (max-width: 991.98px) {
   .site-nav-link.active::after { display: none; }
+}
+
+/* separador que ocupa el lugar del header fijo (no se usa en el inicio) */
+.nav-spacer {
+  flex: none;
+  height: var(--nav-h, 72px);
+}
+
+.site-nav:not(.site-nav--home) {
+  border-bottom: 2px solid var(--dusty);
+}
+
+.site-nav {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
 }

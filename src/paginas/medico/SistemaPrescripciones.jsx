@@ -172,7 +172,7 @@ export default function SistemaPrescripciones() {
           { key: "dosis", label: "Dosis" },
           { key: "stock", label: "Stock" },
           { key: "vencimiento", label: "Vence" },
-          { key: "situacion", label: "Situación" },
+          { key: "situacion", label: "Situación", estado: true },
         ]}
         rows={filas}
         renderActions={(row) => (

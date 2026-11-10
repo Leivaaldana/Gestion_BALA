@@ -8,15 +8,16 @@
 ========================= */
 
 /* RESET */
-*, *::before, *::after {
+.contacto-page *,
+.contacto-page *::before,
+.contacto-page *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
+.contacto-page {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #D1CFC9;
   color: #1C2E4A;
   -webkit-font-smoothing: antialiased;
 }
@@ -186,13 +187,13 @@ body {
   gap: 20px;
 }
 
-.campo {
+.contacto-page .campo {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
 }
 
-.campo label {
+.contacto-page .campo label {
   color: #1C2E4A;
   font-size: 13px;
   font-weight: 700;
@@ -201,8 +202,8 @@ body {
   letter-spacing: 0.5px;
 }
 
-.campo input,
-.campo textarea {
+.contacto-page .campo input,
+.contacto-page .campo textarea {
   width: 100%;
   border: 2px solid #E2E8F0;
   border-radius: 12px;
@@ -218,19 +219,19 @@ body {
   transition: all 0.3s ease;
 }
 
-.campo input::placeholder,
-.campo textarea::placeholder {
+.contacto-page .campo input::placeholder,
+.contacto-page .campo textarea::placeholder {
   color: #94A3B8;
 }
 
-.campo input:focus,
-.campo textarea:focus {
+.contacto-page .campo input:focus,
+.contacto-page .campo textarea:focus {
   border-color: #52677D;
   background-color: #ffffff;
   box-shadow: 0 0 0 4px rgba(82, 103, 125, 0.1);
 }
 
-.campo textarea {
+.contacto-page .campo textarea {
   resize: vertical;
   min-height: 120px;
 }
