@@ -1,13 +1,20 @@
+import { useEffect, useState } from "react";
 import PageHeader from "../../componentes/PageHeader";
 import DataTable from "../../componentes/DataTable";
-
-const consultas = [
-  { id: 1, fecha: "12/03/2026", motivo: "Control anual", diagnostico: "Sin hallazgos relevantes", medico: "Dra. Fernández" },
-  { id: 2, fecha: "02/08/2025", motivo: "Dolor abdominal", diagnostico: "Gastritis leve", medico: "Dr. Ibarra" },
-  { id: 3, fecha: "20/01/2025", motivo: "Vacunación", diagnostico: "Antigripal aplicada", medico: "Enf. Torres" },
-];
+import { useAuth } from "../../context/AuthContext";
+import { formatearFecha } from "../../servicios/turnos";
+import { HISTORIAL_VACIO, escucharHistorial, escucharConsultas } from "../../servicios/historias";
 
 export default function MiHistorialClinico() {
+  const { user } = useAuth();
+  const [historial, setHistorial] = useState(HISTORIAL_VACIO);
+  const [consultas, setConsultas] = useState([]);
+
+  useEffect(() => escucharHistorial(user.dni, setHistorial), [user.dni]);
+  useEffect(() => escucharConsultas(user.dni, setConsultas), [user.dni]);
+
+  const filas = consultas.map((c) => ({ ...c, fecha: formatearFecha(c.fecha) }));
+
   return (
     <div>
       <PageHeader
@@ -19,15 +26,15 @@ export default function MiHistorialClinico() {
         <div className="row g-3">
           <div className="col-sm-4">
             <p className="stat-label mb-1">Grupo sanguíneo</p>
-            <p className="fw-semibold mb-0">O+</p>
+            <p className="fw-semibold mb-0">{historial.grupoSanguineo || "Sin dato"}</p>
           </div>
           <div className="col-sm-4">
             <p className="stat-label mb-1">Alergias</p>
-            <p className="fw-semibold mb-0">Penicilina</p>
+            <p className="fw-semibold mb-0">{historial.alergias}</p>
           </div>
           <div className="col-sm-4">
             <p className="stat-label mb-1">Medicación habitual</p>
-            <p className="fw-semibold mb-0">Ninguna</p>
+            <p className="fw-semibold mb-0">{historial.medicacionHabitual}</p>
           </div>
         </div>
       </div>
@@ -38,9 +45,10 @@ export default function MiHistorialClinico() {
           { key: "fecha", label: "Fecha" },
           { key: "motivo", label: "Motivo" },
           { key: "diagnostico", label: "Diagnóstico" },
-          { key: "medico", label: "Médico" },
+          { key: "indicaciones", label: "Indicaciones" },
+          { key: "medicoNombre", label: "Médico" },
         ]}
-        rows={consultas}
+        rows={filas}
       />
     </div>
   );
