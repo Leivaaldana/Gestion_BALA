@@ -1,13 +1,16 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
   updateEmail,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, getDocs, query, where, collection } from "firebase/firestore";
+import {
+  doc, getDoc, setDoc, getDocs, query, where, collection, limit,
+} from "firebase/firestore";
 import { auth, db } from "../firebase";
 
 export const ROLE_HOME = {
@@ -20,6 +23,21 @@ export const ROLE_HOME = {
 
 // Se conserva para permitir el acceso a cuentas creadas antes de usar el correo real.
 const emailInterno = (dni) => `${dni.trim()}@bala.app`;
+
+async function buscarPerfilPorCuenta(cuenta) {
+  const correo = cuenta.email?.trim().toLowerCase() || "";
+  if (correo.endsWith("@bala.app")) {
+    const dni = correo.slice(0, -"@bala.app".length);
+    const perfil = await getDoc(doc(db, "usuarios", dni));
+    return perfil.exists() ? perfil.data() : null;
+  }
+
+  if (!correo) return null;
+  const perfiles = await getDocs(
+    query(collection(db, "usuarios"), where("email", "==", correo), limit(1))
+  );
+  return perfiles.empty ? null : perfiles.docs[0].data();
+}
 
 const AuthContext = createContext(null);
 
@@ -37,17 +55,8 @@ export function AuthProvider({ children }) {
         return;
       }
       try {
-        const correo = fbUser.email?.trim().toLowerCase() || "";
-        if (correo.endsWith("@bala.app")) {
-          const dni = correo.split("@")[0];
-          const snap = await getDoc(doc(db, "usuarios", dni));
-          setUser(snap.exists() ? armarSesion(snap.data()) : null);
-        } else {
-          const perfiles = await getDocs(
-            query(collection(db, "usuarios"), where("email", "==", correo))
-          );
-          setUser(perfiles.empty ? null : armarSesion(perfiles.docs[0].data()));
-        }
+        const perfil = await buscarPerfilPorCuenta(fbUser);
+        setUser(perfil ? armarSesion(perfil) : null);
       } catch {
         setUser(null);
       }
@@ -63,45 +72,33 @@ export function AuthProvider({ children }) {
   });
 
   // Devuelve { ok: true, rol } o { ok: false, error }
-  const login = async (dni, contrasena) => {
+  const login = async (identificador, contrasena) => {
+    let sesionIniciada = false;
     try {
-      const dniNormalizado = dni.trim();
-      const snap = await getDoc(doc(db, "usuarios", dniNormalizado));
-      if (!snap.exists()) {
-        return { ok: false, error: "Tu cuenta no tiene un perfil asignado." };
-      }
-      const perfil = snap.data();
-      const correo = perfil.email?.trim().toLowerCase();
-      let cred;
-      let cuentaAnterior = false;
+      const valor = identificador.trim();
+      const usaCorreo = valor.includes("@");
+      const correoLogin = usaCorreo ? valor.toLowerCase() : emailInterno(valor);
+      const cred = await signInWithEmailAndPassword(auth, correoLogin, contrasena);
+      sesionIniciada = true;
 
-      if (correo) {
-        try {
-          cred = await signInWithEmailAndPassword(auth, correo, contrasena);
-        } catch (e) {
-          if (e.code !== "auth/user-not-found" && e.code !== "auth/invalid-credential") throw e;
-          cred = await signInWithEmailAndPassword(auth, emailInterno(dniNormalizado), contrasena);
-          cuentaAnterior = true;
-        }
-      } else {
-        cred = await signInWithEmailAndPassword(auth, emailInterno(dniNormalizado), contrasena);
+      const perfil = await buscarPerfilPorCuenta(cred.user);
+      if (!perfil) {
+        await signOut(auth);
+        return {
+          ok: false,
+          error: "La cuenta inició sesión, pero no tiene un perfil asociado en Firestore.",
+        };
       }
 
-      if (cuentaAnterior && correo) {
+      const correoPerfil = perfil.email?.trim().toLowerCase();
+      const esCuentaAnterior = cred.user.email?.toLowerCase().endsWith("@bala.app");
+      if (esCuentaAnterior && correoPerfil) {
         try {
-          await updateEmail(cred.user, correo);
+          await updateEmail(cred.user, correoPerfil);
         } catch (e) {
-          await signOut(auth);
-          if (e.code === "auth/email-already-in-use") {
-            return {
-              ok: false,
-              error: "Ese correo ya está asociado a otra cuenta de Firebase. Contactá a administración para revisar tus datos.",
-            };
+          if (e.code !== "auth/email-already-in-use") {
+            console.error("No se pudo migrar el correo de la cuenta antigua:", e);
           }
-          return {
-            ok: false,
-            error: "No se pudo actualizar el correo de tu cuenta para habilitar la recuperación. Probá de nuevo o contactá a administración.",
-          };
         }
       }
 
@@ -109,8 +106,16 @@ export function AuthProvider({ children }) {
       setUser(sesion);
       return { ok: true, rol: sesion.rol };
     } catch (e) {
+      if (sesionIniciada) await signOut(auth);
+      if (e.code === "permission-denied")
+        return {
+          ok: false,
+          error: "Firebase Authentication aceptó la cuenta, pero Firestore bloqueó la lectura del perfil. Revisá las reglas de la colección usuarios.",
+        };
       if (e.code === "auth/network-request-failed")
         return { ok: false, error: "No se pudo conectar con Firebase. Revisá tu conexión e intentá de nuevo." };
+      if (e.code === "auth/operation-not-allowed")
+        return { ok: false, error: "El acceso con correo y contraseña no está habilitado en Firebase Authentication." };
       return { ok: false, error: "DNI o contraseña incorrectos." };
     }
   };
@@ -142,11 +147,18 @@ export function AuthProvider({ children }) {
   const registrar = async ({ dni, nombre, apellido, email, contrasena }) => {
     const emailNorm = email.trim().toLowerCase();
     registrando.current = true;
+    let cuentaCreada = null;
     try {
-      const dup = await getDocs(query(collection(db, "usuarios"), where("email", "==", emailNorm)));
-      if (!dup.empty) return { ok: false, error: "Ya existe una cuenta con ese correo." };
-
-      await createUserWithEmailAndPassword(auth, emailNorm, contrasena);
+      const cred = await createUserWithEmailAndPassword(auth, emailNorm, contrasena);
+      cuentaCreada = cred.user;
+      const dup = await getDocs(
+        query(collection(db, "usuarios"), where("email", "==", emailNorm), limit(1))
+      );
+      if (!dup.empty) {
+        await deleteUser(cred.user);
+        cuentaCreada = null;
+        return { ok: false, error: "Ya existe una cuenta con ese correo." };
+      }
 
       const perfil = {
         dni: dni.trim(),
@@ -156,11 +168,19 @@ export function AuthProvider({ children }) {
         rol: "paciente",
       };
       await setDoc(doc(db, "usuarios", perfil.dni), perfil);
+      cuentaCreada = null;
 
       const sesion = armarSesion(perfil);
       setUser(sesion);
       return { ok: true, rol: "paciente" };
     } catch (e) {
+      if (cuentaCreada) {
+        try {
+          await deleteUser(cuentaCreada);
+        } catch (deleteError) {
+          console.error("No se pudo limpiar la cuenta de Auth después de fallar el registro:", deleteError);
+        }
+      }
       if (e.code === "auth/email-already-in-use")
         return { ok: false, error: "Ese correo ya está asociado a una cuenta." };
       if (e.code === "auth/weak-password")

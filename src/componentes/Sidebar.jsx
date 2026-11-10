@@ -22,6 +22,7 @@ const MENUS = {
     { label: "Registro de altas", path: "/administrativo/altas" },
     { label: "Camas e internaciones", path: "/administrativo/camas" },
     { label: "Gestión de agenda", path: "/administrativo/agenda" },
+    { label: "Gestión de reclamos", path: "/administrativo/reclamos" },
   ],
   directivos: [
     { label: "Recursos del hospital", path: "/directivos/recursos" },

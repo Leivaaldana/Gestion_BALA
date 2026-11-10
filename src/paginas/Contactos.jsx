@@ -1,7 +1,40 @@
-import React from "react";
+import { useState } from "react";
+import { enviarReclamo } from "../servicios/reclamos";
 import "../estilos/Contactos.css";
 
 function Contacto() {
+  const [formulario, setFormulario] = useState({
+    nombre: "",
+    email: "",
+    asunto: "",
+    mensaje: "",
+  });
+  const [error, setError] = useState("");
+  const [exito, setExito] = useState("");
+  const [enviando, setEnviando] = useState(false);
+
+  const cambiarCampo = (e) => {
+    setFormulario((actual) => ({ ...actual, [e.target.name]: e.target.value }));
+    setError("");
+    setExito("");
+  };
+
+  const enviar = async (e) => {
+    e.preventDefault();
+    setError("");
+    setExito("");
+    setEnviando(true);
+    try {
+      await enviarReclamo(formulario);
+      setFormulario({ nombre: "", email: "", asunto: "", mensaje: "" });
+      setExito("Recibimos tu mensaje. Nuestro equipo se pondrá en contacto con vos por correo.");
+    } catch {
+      setError("No se pudo enviar el mensaje. Revisá tu conexión e intentá nuevamente.");
+    } finally {
+      setEnviando(false);
+    }
+  };
+
   return (
     <div className="contacto-page">
 
@@ -61,14 +94,19 @@ function Contacto() {
           <div className="contacto-form">
             <h2>Envianos un mensaje</h2>
 
-            <form>
+            <form onSubmit={enviar}>
               <div className="form-row">
                 <div className="campo">
                   <label htmlFor="nombre">Nombre y Apellido</label>
                   <input
                     type="text"
                     id="nombre"
+                    name="nombre"
                     placeholder="Ej: María Pérez"
+                    value={formulario.nombre}
+                    onChange={cambiarCampo}
+                    maxLength={100}
+                    required
                   />
                 </div>
 
@@ -77,7 +115,12 @@ function Contacto() {
                   <input
                     type="email"
                     id="email"
+                    name="email"
                     placeholder="tuemail@gmail.com"
+                    value={formulario.email}
+                    onChange={cambiarCampo}
+                    maxLength={254}
+                    required
                   />
                 </div>
               </div>
@@ -88,6 +131,11 @@ function Contacto() {
                   type="text"
                   id="asunto"
                   placeholder="¿En qué podemos ayudarte?"
+                  name="asunto"
+                  value={formulario.asunto}
+                  onChange={cambiarCampo}
+                  maxLength={150}
+                  required
                 />
               </div>
 
@@ -95,13 +143,21 @@ function Contacto() {
                 <label htmlFor="mensaje">Mensaje</label>
                 <textarea
                   id="mensaje"
+                  name="mensaje"
                   rows="5"
                   placeholder="Escribí tu consulta con confianza..."
-                ></textarea>
+                  value={formulario.mensaje}
+                  onChange={cambiarCampo}
+                  maxLength={5000}
+                  required
+                />
               </div>
 
-              <button type="submit">
-                Enviar mensaje
+              {error && <div className="alert alert-danger" role="alert">{error}</div>}
+              {exito && <div className="alert alert-success" role="status">{exito}</div>}
+
+              <button type="submit" disabled={enviando}>
+                {enviando ? "Enviando…" : "Enviar mensaje"}
               </button>
             </form>
           </div>

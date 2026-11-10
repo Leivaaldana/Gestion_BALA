@@ -53,20 +53,20 @@ export default function Login() {
 
           <h1 className="auth-title mb-2">Bienvenido de nuevo</h1>
           <p className="auth-sub mb-4">
-            Ingresá tu DNI y contraseña para acceder a tu cuenta.
+            Ingresá tu DNI o correo electrónico y contraseña para acceder a tu cuenta.
           </p>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label htmlFor="dni" className="form-label">
-                DNI
+              <label htmlFor="identificador" className="form-label">
+                DNI o correo electrónico
               </label>
               <input
                 type="text"
-                id="dni"
+                id="identificador"
                 className="form-control auth-input"
-                placeholder="Ej: 30123456"
-                inputMode="numeric"
+                placeholder="DNI o correo electrónico"
+                autoComplete="username"
                 value={dni}
                 onChange={(e) => setDni(e.target.value)}
                 required
