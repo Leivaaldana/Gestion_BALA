@@ -1,4 +1,11 @@
 const ESTADO_CLASSES = {
+  Vencido: "badge-estado badge-danger",
+  "Stock bajo": "badge-estado badge-warning",
+  OK: "badge-estado badge-success",
+  Baja: "badge-estado badge-success",
+  Media: "badge-estado badge-info",
+  Alta: "badge-estado badge-warning",
+  Urgente: "badge-estado badge-danger",
   Pendiente: "badge-estado badge-warning",
   Confirmado: "badge-estado badge-info",
   Atendido: "badge-estado badge-success",
@@ -28,7 +35,7 @@ function EstadoBadge({ value }) {
 export default function DataTable({ columns, rows, renderActions }) {
   return (
     <div className="data-table-wrapper">
-      <table className="table data-table align-middle">
+      <table className="table table-hover data-table align-middle">
         <thead>
           <tr>
             {columns.map((col) => (
