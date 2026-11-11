@@ -4,15 +4,19 @@ import DataTable from "../../componentes/DataTable";
 import { escucharAuditoria } from "../../servicios/historias";
 
 export default function SupervisionAuditoria() {
-  const [registros, setRegistros] = useState([]);
+  const [registros, setRegistros] = useState(null);
+  const [error, setError] = useState("");
   const [texto, setTexto] = useState("");
   const [accion, setAccion] = useState("");
 
-  useEffect(() => escucharAuditoria(setRegistros), []);
+  useEffect(
+    () => escucharAuditoria(setRegistros, (e) => setError(e.message)),
+    []
+  );
 
-  const acciones = [...new Set(registros.map((r) => r.accion))];
+  const acciones = [...new Set((registros || []).map((r) => r.accion))];
 
-  const filas = registros
+  const filas = (registros || [])
     .map((r) => ({
       ...r,
       fecha: r.creadoEn ? r.creadoEn.toDate().toLocaleString("es-AR") : "Registrando…",
@@ -31,6 +35,8 @@ export default function SupervisionAuditoria() {
         title="Supervisión de auditoría"
         subtitle="Registro de quién consultó o modificó la historia clínica de un paciente, y cuándo."
       />
+
+      {error && <div className="alert alert-danger">No se pudieron cargar los registros de auditoría: {error}</div>}
 
       <div className="panel-card mb-4">
         <div className="row g-3 align-items-end">
@@ -63,15 +69,19 @@ export default function SupervisionAuditoria() {
         </div>
       </div>
 
-      <DataTable
-        columns={[
-          { key: "fecha", label: "Fecha y hora" },
-          { key: "usuario", label: "Usuario" },
-          { key: "accion", label: "Acción" },
-          { key: "entidad", label: "Entidad afectada" },
-        ]}
-        rows={filas}
-      />
+      {registros ? (
+        <DataTable
+          columns={[
+            { key: "fecha", label: "Fecha y hora" },
+            { key: "usuario", label: "Usuario" },
+            { key: "accion", label: "Acción" },
+            { key: "entidad", label: "Entidad afectada" },
+          ]}
+          rows={filas}
+        />
+      ) : (
+        !error && <p className="text-muted">Cargando registros de auditoría…</p>
+      )}
     </div>
   );
 }

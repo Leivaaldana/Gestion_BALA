@@ -12,6 +12,7 @@ import {
   doc, getDoc, setDoc, getDocs, query, where, collection, limit,
 } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import { actualizarPresenciaPaciente } from "../servicios/presencia";
 import PantallaCarga from "../componentes/PantallaCarga.jsx";
 
 export const ROLE_HOME = {
@@ -80,6 +81,19 @@ export function AuthProvider({ children }) {
     });
     return cancelar;
   }, []);
+
+  useEffect(() => {
+    if (user?.rol !== "paciente") return undefined;
+
+    const actualizar = () => {
+      actualizarPresenciaPaciente(user.dni).catch((error) => {
+        console.error("No se pudo actualizar la presencia del paciente:", error);
+      });
+    };
+    actualizar();
+    const intervalo = setInterval(actualizar, 60_000);
+    return () => clearInterval(intervalo);
+  }, [user?.dni, user?.rol]);
 
   // Devuelve { ok: true, rol } o { ok: false, error }
   const login = async (identificador, contrasena) => {

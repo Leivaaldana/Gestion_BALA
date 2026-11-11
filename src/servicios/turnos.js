@@ -6,14 +6,19 @@ import { db } from "../firebase";
 
 const pad = (n) => String(n).padStart(2, "0");
 
-// 08:00, 08:30 ... 19:30
+// Turnos de 30 minutos dentro del horario de atención: 09:00 a 16:00.
 export const HORARIOS = Array.from(
-  { length: 24 },
-  (_, i) => `${pad(8 + Math.floor(i / 2))}:${i % 2 ? "30" : "00"}`
+  { length: 14 },
+  (_, i) => `${pad(9 + Math.floor(i / 2))}:${i % 2 ? "30" : "00"}`
 );
 
 export const hoyISO = () => new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD local
 export const formatearFecha = (iso) => (iso ? iso.split("-").reverse().join("/") : "—");
+export const esDiaHabil = (fecha) => {
+  if (!fecha) return false;
+  const dia = new Date(`${fecha}T00:00:00`).getDay();
+  return dia >= 1 && dia <= 5;
+};
 
 export async function listarMedicos() {
   const snap = await getDocs(query(collection(db, "usuarios"), where("rol", "==", "medico")));
@@ -36,6 +41,10 @@ export async function horariosOcupados(medicoDni, fecha) {
 
 // Lanza Error("OCUPADO") si ese médico ya tiene un turno activo a esa hora
 export async function reservarTurno(t) {
+  if (!esDiaHabil(t.fecha) || !HORARIOS.includes(t.hora)) {
+    throw new Error("FUERA_DE_HORARIO");
+  }
+
   const id = `${t.medicoDni}_${t.fecha}_${t.hora.replace(":", "")}`;
   const turnoRef = doc(db, "turnos", id);
   const disponibilidadRef = doc(db, "disponibilidad_turnos", id);

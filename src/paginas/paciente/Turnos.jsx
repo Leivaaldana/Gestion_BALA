@@ -5,7 +5,7 @@ import DataTable from "../../componentes/DataTable";
 import BookingProgress from "../../componentes/BookingProgress.jsx";
 import { useAuth } from "../../context/AuthContext";
 import {
-  HORARIOS, hoyISO, formatearFecha, listarMedicos,
+  HORARIOS, hoyISO, formatearFecha, esDiaHabil, listarMedicos,
   horariosOcupados, reservarTurno, escucharTurnos, cambiarEstadoTurno,
 } from "../../servicios/turnos";
 
@@ -53,6 +53,13 @@ export default function Turnos() {
 
   const cambiar = (e) => {
     const { name, value } = e.target;
+    if (name === "fecha" && value && !esDiaHabil(value)) {
+      setForm((f) => ({ ...f, fecha: "", hora: "" }));
+      setOcupados([]);
+      setError("La clínica atiende de lunes a viernes. Elegí un día hábil.");
+      return;
+    }
+
     setForm((f) => {
       const n = { ...f, [name]: value };
       if (name === "especialidad") { n.medicoDni = ""; n.hora = ""; }
@@ -92,6 +99,8 @@ export default function Turnos() {
       if (e.message === "OCUPADO") {
         setError("Ese horario acaba de ser tomado. Elegí otro.");
         horariosOcupados(medicoDni, fecha).then(setOcupados);
+      } else if (e.message === "FUERA_DE_HORARIO") {
+        setError("Elegí un día de lunes a viernes y un horario entre las 9:00 y las 15:30.");
       } else if (e.code === "permission-denied") {
         console.error("Firebase rechazó la reserva del turno:", e);
         setError("Firebase rechazó la reserva (permission-denied). Revisá las reglas de Firestore para permitir la lectura y creación de turnos a pacientes autenticados.");
@@ -166,6 +175,7 @@ export default function Turnos() {
             <div className="col-md-4">
               <label className="form-label">Fecha</label>
               <input type="date" className="form-control" name="fecha" min={hoyISO()} value={form.fecha} onChange={cambiar} disabled={!form.medicoDni} />
+              <small className="form-text">Atención de lunes a viernes.</small>
             </div>
             <div className="col-md-4">
               <label className="form-label">Horario</label>

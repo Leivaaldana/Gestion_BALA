@@ -3,15 +3,32 @@ import PageHeader from "../../componentes/PageHeader";
 import StatCard from "../../componentes/StatCard";
 import DataTable from "../../componentes/DataTable";
 import { escucharTurnos } from "../../servicios/turnos";
+import {
+  contarPacientesRegistrados, escucharPacientesActivos,
+} from "../../servicios/presencia";
 
 export default function AnalisisDatos() {
   const [turnos, setTurnos] = useState(null);
-  const [error, setError] = useState("");
+  const [pacientesRegistrados, setPacientesRegistrados] = useState(null);
+  const [pacientesActivos, setPacientesActivos] = useState(null);
+  const [errores, setErrores] = useState({});
 
-  useEffect(
-    () => escucharTurnos(setTurnos, undefined, (e) => setError(e.message)),
-    []
-  );
+  useEffect(() => {
+    const cancelarTurnos = escucharTurnos(setTurnos, undefined, (e) =>
+      setErrores((actuales) => ({ ...actuales, turnos: e.message }))
+    );
+    const cancelarPresencia = escucharPacientesActivos(setPacientesActivos, (e) =>
+      setErrores((actuales) => ({ ...actuales, activos: e.message }))
+    );
+    contarPacientesRegistrados()
+      .then(setPacientesRegistrados)
+      .catch((e) => setErrores((actuales) => ({ ...actuales, registrados: e.message })));
+
+    return () => {
+      cancelarTurnos();
+      cancelarPresencia();
+    };
+  }, []);
 
   const porEspecialidad = turnos
     ? Object.values(
@@ -50,7 +67,17 @@ export default function AnalisisDatos() {
         subtitle="Turnos agrupados por especialidad y estado, según los registros de Firestore."
       />
 
-      {error && <div className="alert alert-danger">No se pudieron cargar los turnos: {error}</div>}
+      {Object.entries(errores).map(([fuente, mensaje]) => (
+        <div className="alert alert-danger" key={fuente}>
+          No se pudieron cargar {
+            {
+              turnos: "los turnos",
+              activos: "la actividad de pacientes",
+              registrados: "el conteo de pacientes registrados",
+            }[fuente]
+          }: {mensaje}
+        </div>
+      ))}
 
       <div className="row g-3 mb-4">
         <div className="col-md-4">
@@ -72,6 +99,20 @@ export default function AnalisisDatos() {
             label="Turnos cancelados"
             value={turnos ? formatoNumero(cantidadCancelados) : "Cargando…"}
             hint={turnos ? porcentajeCancelados : ""}
+          />
+        </div>
+        <div className="col-md-4">
+          <StatCard
+            label="Pacientes registrados"
+            value={pacientesRegistrados === null ? "Cargando…" : formatoNumero(pacientesRegistrados)}
+            hint="Perfiles con rol paciente"
+          />
+        </div>
+        <div className="col-md-4">
+          <StatCard
+            label="Pacientes activos ahora"
+            value={pacientesActivos === null ? "Cargando…" : formatoNumero(pacientesActivos)}
+            hint="Actividad registrada en los últimos 2 minutos"
           />
         </div>
       </div>

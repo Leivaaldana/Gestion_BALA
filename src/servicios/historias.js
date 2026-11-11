@@ -44,16 +44,23 @@ export const registrarAuditoria = (user, accion, entidad) =>
   addDoc(collection(db, "auditoria"), {
     usuarioDni: user.dni,
     usuarioNombre: user.nombre,
+    usuarioEmail: user.email,
     rol: user.rol,
     accion,
     entidad,
     creadoEn: serverTimestamp(),
-  }).catch(() => {}); // la auditoría nunca debe romper la pantalla
-
-export function escucharAuditoria(callback) {
-  return onSnapshot(collection(db, "auditoria"), (snap) => {
-    const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    lista.sort((a, b) => (b.creadoEn?.seconds ?? Infinity) - (a.creadoEn?.seconds ?? Infinity));
-    callback(lista);
+  }).catch((error) => {
+    console.error("No se pudo registrar la auditoría:", error);
   });
+
+export function escucharAuditoria(callback, onError) {
+  return onSnapshot(
+    collection(db, "auditoria"),
+    (snap) => {
+      const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      lista.sort((a, b) => (b.creadoEn?.seconds ?? Infinity) - (a.creadoEn?.seconds ?? Infinity));
+      callback(lista);
+    },
+    onError
+  );
 }
