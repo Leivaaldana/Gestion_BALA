@@ -89,22 +89,41 @@ function FormularioRegistro() {
 };
 
   return (
-    <div className="registro-container">
-      <div className="registro-box">
-        <Link to="/" className="registro-logo" aria-label="Volver al inicio">
-          <img src={logo} alt="Clínica B.A.L.A." />
-        </Link>
-        {flujoReserva && (
-          <div className="registro-booking-progress">
-            <p>Creá tu cuenta y enseguida vas a poder reservar</p>
-            <BookingProgress step={2} />
+    <main className="institutional-page registro-container">
+      <div className="registro-layout">
+        <section className="registro-intro">
+          <p className="inst-kicker">CLÍNICA B.A.L.A. <span>· NUEVO PACIENTE</span></p>
+          <h1>Tu cuidado<br />empieza <em>acá.</em></h1>
+          <p className="registro-intro-copy">
+            Creá tu cuenta para gestionar turnos y tener tu información a mano, en un solo lugar.
+          </p>
+          <div className="registro-manifesto">
+            <span>UN PASO A LA VEZ</span>
+            <strong>Estamos<br />para acompañarte.</strong>
+            <b>01 / ACCESO AL PORTAL</b>
           </div>
-        )}
-        <h1>Crear una cuenta</h1>
+          <Link className="registro-contact-link" to="/">Volver al inicio <span aria-hidden="true">↗</span></Link>
+        </section>
 
-        <p className="subtitulo">Registrate para acceder a Clínica B.A.L.A</p>
+        <section className="registro-box">
+          <div className="registro-form-heading">
+            <Link to="/" className="registro-logo" aria-label="Volver al inicio">
+              <img src={logo} alt="Clínica B.A.L.A." />
+            </Link>
+            <div>
+              <p className="registro-kicker">CREÁ TU ACCESO</p>
+              <h2>Crear una cuenta</h2>
+              <p className="subtitulo">Registrate para acceder a Clínica B.A.L.A</p>
+            </div>
+          </div>
+          {flujoReserva && (
+            <div className="registro-booking-progress">
+              <p>Creá tu cuenta y enseguida vas a poder reservar</p>
+              <BookingProgress step={2} />
+            </div>
+          )}
 
-        <form id="registroForm" onSubmit={handleSubmit} noValidate>
+          <form id="registroForm" onSubmit={handleSubmit} noValidate>
           <div className="campo">
             <label htmlFor="dni">DNI</label>
             <input
@@ -194,9 +213,10 @@ function FormularioRegistro() {
             ¿Ya tenés cuenta? <Link to="/login">Iniciá sesión</Link> ·{" "}
             <Link to="/">Volver al inicio</Link>
           </p>
-        </form>
+          </form>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 
