@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
 import BookingProgress from "../componentes/BookingProgress.jsx";
+import PasswordInput from "../componentes/PasswordInput.jsx";
 import logo from "../assets/Logotipo.jpeg";
 import "../estilos/Registro.css";
 
@@ -160,11 +161,11 @@ function FormularioRegistro() {
 
           <div className="campo">
             <label htmlFor="contrasena">Contraseña</label>
-            <input
-              type="password"
+            <PasswordInput
               id="contrasena"
               name="contrasena"
               placeholder="Ingresá una contraseña"
+              autoComplete="new-password"
               value={datos.contrasena}
               onChange={handleChange}
             />
@@ -173,11 +174,11 @@ function FormularioRegistro() {
 
           <div className="campo">
             <label htmlFor="repetirContrasena">Repetir contraseña</label>
-            <input
-              type="password"
+            <PasswordInput
               id="repetirContrasena"
               name="repetirContrasena"
               placeholder="Repetí tu contraseña"
+              autoComplete="new-password"
               value={datos.repetirContrasena}
               onChange={handleChange}
             />

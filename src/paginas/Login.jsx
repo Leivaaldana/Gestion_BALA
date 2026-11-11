@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
 import BookingProgress from "../componentes/BookingProgress.jsx";
+import PasswordInput from "../componentes/PasswordInput.jsx";
 import logo from "../assets/Logotipo.jpeg";
 import "../estilos/Login.css";
 
@@ -86,11 +87,11 @@ export default function Login() {
               <label htmlFor="password" className="form-label">
                 Contraseña
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 id="password"
                 className="form-control auth-input"
                 placeholder="••••••••"
+                autoComplete="current-password"
                 value={contrasena}
                 onChange={(e) => setContrasena(e.target.value)}
                 required
