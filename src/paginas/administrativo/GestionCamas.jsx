@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import PageHeader from "../../componentes/PageHeader";
 import DataTable from "../../componentes/DataTable";
 import { useAuth } from "../../context/AuthContext";
@@ -23,12 +24,33 @@ const BADGE = {
 export default function GestionCamas() {
   const { user } = useAuth();
   const [habitaciones, setHabitaciones] = useState([]);
+  const [cargandoHabitaciones, setCargandoHabitaciones] = useState(true);
+  const [errorHabitaciones, setErrorHabitaciones] = useState("");
   const [ordenes, setOrdenes] = useState([]);
   const [elegida, setElegida] = useState(null); // orden seleccionada
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
 
-  useEffect(() => escucharHabitaciones(setHabitaciones), []);
+  useEffect(
+    () =>
+      escucharHabitaciones(
+        (lista) => {
+          setHabitaciones(lista);
+          setCargandoHabitaciones(false);
+          setErrorHabitaciones("");
+        },
+        (errorLectura) => {
+          console.error("No se pudieron cargar las habitaciones:", errorLectura);
+          setCargandoHabitaciones(false);
+          setErrorHabitaciones(
+            errorLectura.code === "permission-denied"
+              ? "Firebase rechazó la lectura de habitaciones. Revisá las reglas de Firestore para la colección habitaciones y el acceso del rol administrativo."
+              : "No se pudieron cargar las habitaciones. Revisá la conexión con Firebase e intentá de nuevo."
+          );
+        }
+      ),
+    []
+  );
   useEffect(() => escucharOrdenes(setOrdenes), []);
 
   const pendientes = ordenes.filter((o) => o.tipo === "Internación" && o.estado === "Pendiente");
@@ -72,6 +94,7 @@ export default function GestionCamas() {
 
       {error && <div className="alert alert-danger">{error}</div>}
       {aviso && <div className="alert alert-success">{aviso}</div>}
+      {errorHabitaciones && <div className="alert alert-danger" role="alert">{errorHabitaciones}</div>}
 
       <h2>Órdenes de internación pendientes</h2>
       <DataTable
@@ -104,39 +127,50 @@ export default function GestionCamas() {
         </div>
       )}
 
-      <div className="room-grid">
-        {habitaciones.map((h) => (
-          <div key={h.id} className={`room-card estado-${h.estado}`}>
-            <h3>Hab. {h.numero}</h3>
-            <p>
-              Piso {h.piso} · {h.sector}
-              <br />
-              {h.tipo}
-            </p>
-            <span className={`badge-estado ${BADGE[h.estado]}`}>{ESTADO_LABEL[h.estado]}</span>
+      {cargandoHabitaciones ? (
+        <p role="status">Cargando habitaciones…</p>
+      ) : habitaciones.length === 0 && !errorHabitaciones ? (
+        <div className="alert alert-warning" role="status">
+          Todavía no hay habitaciones cargadas en Firestore. Si es la primera configuración, podés
+          cargarlas desde <Link to="/seed">la pantalla de carga inicial</Link>.
+        </div>
+      ) : (
+        <div className="room-grid">
+          {habitaciones.map((h) => (
+            <div key={h.id} className={`room-card estado-${h.estado}`}>
+              <h3>Hab. {h.numero}</h3>
+              <p>
+                Piso {h.piso} · {h.sector}
+                <br />
+                {h.tipo}
+              </p>
+              <span className={`badge-estado ${BADGE[h.estado] || "badge-muted"}`}>
+                {ESTADO_LABEL[h.estado] || h.estado || "Sin estado"}
+              </span>
 
-            {h.estado === "ocupada" && (
-              <>
-                <p className="mt-2 mb-2">{h.pacienteNombre}</p>
-                <button className="btn btn-sm btn-outline-midnight" onClick={() => alta(h)}>
-                  Dar de alta
-                </button>
-              </>
-            )}
+              {h.estado === "ocupada" && (
+                <>
+                  <p className="mt-2 mb-2">{h.pacienteNombre}</p>
+                  <button className="btn btn-sm btn-outline-midnight" onClick={() => alta(h)}>
+                    Dar de alta
+                  </button>
+                </>
+              )}
 
-            {h.estado === "disponible" && elegida && (
-              <div className="mt-2">
-                <button className="btn btn-sm btn-dusty w-100" onClick={() => asignar(h)}>
-                  Asignar
-                </button>
-                {h.sector !== elegida.sector && (
-                  <p className="mt-2 mb-0">Otro sector</p>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+              {h.estado === "disponible" && elegida && (
+                <div className="mt-2">
+                  <button className="btn btn-sm btn-dusty w-100" onClick={() => asignar(h)}>
+                    Asignar
+                  </button>
+                  {h.sector !== elegida.sector && (
+                    <p className="mt-2 mb-0">Otro sector</p>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
