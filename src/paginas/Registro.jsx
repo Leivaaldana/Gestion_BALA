@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
+import logo from "../assets/Logotipo.jpeg";
 import "../estilos/Registro.css";
 
 const SOLO_LETRAS = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/;
@@ -82,6 +83,9 @@ function FormularioRegistro() {
   return (
     <div className="registro-container">
       <div className="registro-box">
+        <Link to="/" className="registro-logo" aria-label="Volver al inicio">
+          <img src={logo} alt="Clínica B.A.L.A." />
+        </Link>
         <h1>Crear una cuenta</h1>
 
         <p className="subtitulo">Registrate para acceder a Clínica B.A.L.A</p>

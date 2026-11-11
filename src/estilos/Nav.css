@@ -42,8 +42,15 @@
 .site-nav .navbar-brand {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.15rem;
   color: #fff !important;
+}
+
+.site-nav .navbar-brand img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* ---------- Links ---------- */

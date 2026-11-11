@@ -1,10 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
+import logo from "../assets/Logotipo.jpeg";
 import "../estilos/Nav.css";
 
 // Rutas donde el header NO se muestra
-const RUTAS_SIN_HEADER = ["/login", "/registro"];
+const RUTAS_SIN_HEADER = ["/login", "/registro", "/recuperar-contrasena"];
 
 export default function Nav() {
   const { user, logout } = useAuth();
@@ -59,10 +60,7 @@ useLayoutEffect(() => {
     <nav ref={navRef} className={classes.join(" ")}>
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center gap-2 fw-bold" to="/">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-dusty" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11 2H13V11H22V13H13V22H11V13H2V11H11V2Z" fill="currentColor" />
-          </svg>
-          B.A.L.A
+          <img src={logo} alt="Clínica B.A.L.A." />
         </Link>
 
         <button

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/Logotipo.png";
+import logo from "../assets/Logotipo.jpeg";
 import "../estilos/Login.css";
 
 export default function RecuperarContrasena() {
@@ -31,8 +31,7 @@ export default function RecuperarContrasena() {
       <div className="auth-visual d-none d-lg-flex">
         <div className="auth-visual-overlay">
           <Link to="/" className="auth-visual-logo d-inline-flex align-items-center gap-2">
-            <img src={logo} alt="Logotipo" />
-            <span>B.A.L.A</span>
+            <img src={logo} alt="Clínica B.A.L.A." />
           </Link>
           <blockquote className="auth-visual-quote">
             <p>Recuperá el acceso a tu cuenta de forma segura.</p>
@@ -43,7 +42,7 @@ export default function RecuperarContrasena() {
       <div className="auth-form-panel d-flex align-items-center justify-content-center">
         <div className="auth-form-inner">
           <Link to="/" className="auth-logo d-flex align-items-center gap-2 mb-5 d-lg-none">
-            <span>B.A.L.A</span>
+            <img src={logo} alt="Clínica B.A.L.A." />
           </Link>
           <h1 className="auth-title mb-2">Recuperar contraseña</h1>
           <p className="auth-sub mb-4">

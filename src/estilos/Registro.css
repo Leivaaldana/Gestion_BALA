@@ -19,6 +19,20 @@
   box-shadow: 6px 6px 0 #0f1a2b;
 }
 
+.registro-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.registro-logo img {
+  display: block;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .registro-box h1 {
   text-align: center;
   color: #1c2e4a;
