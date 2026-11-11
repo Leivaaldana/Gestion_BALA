@@ -12,6 +12,7 @@ import {
   doc, getDoc, setDoc, getDocs, query, where, collection, limit,
 } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import PantallaCarga from "../componentes/PantallaCarga.jsx";
 
 export const ROLE_HOME = {
   paciente: "/paciente/historial",
@@ -58,6 +59,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const [operacion, setOperacion] = useState("");
   const registrando = useRef(false); // evita la carrera entre crear la cuenta y guardar el perfil
 
   useEffect(() => {
@@ -81,6 +83,7 @@ export function AuthProvider({ children }) {
 
   // Devuelve { ok: true, rol } o { ok: false, error }
   const login = async (identificador, contrasena) => {
+    setOperacion("Iniciando sesión de forma segura…");
     let sesionIniciada = false;
     try {
       const valor = identificador.trim();
@@ -125,10 +128,13 @@ export function AuthProvider({ children }) {
       if (e.code === "auth/operation-not-allowed")
         return { ok: false, error: "El acceso con correo y contraseña no está habilitado en Firebase Authentication." };
       return { ok: false, error: "DNI o contraseña incorrectos." };
+    } finally {
+      setOperacion("");
     }
   };
 
   const recuperarContrasena = async (email) => {
+    setOperacion("Enviando el enlace de recuperación…");
     try {
       await sendPasswordResetEmail(auth, email.trim().toLowerCase(), {
         url: `${window.location.origin}/login`,
@@ -148,6 +154,8 @@ export function AuthProvider({ children }) {
       if (e.code === "auth/invalid-email")
         return { ok: false, error: "Ingresá una dirección de correo válida." };
       return { ok: false, error: "No se pudo enviar el correo de recuperación. Intentá de nuevo más tarde." };
+    } finally {
+      setOperacion("");
     }
   };
 
@@ -156,18 +164,24 @@ export function AuthProvider({ children }) {
     if (typeof fotoPerfil !== "string" || fotoPerfil.length > 250000)
       throw new Error("La imagen excede el tamaño permitido.");
 
-    await setDoc(
-      doc(db, "fotos_perfil", user.dni),
-      { fotoPerfil },
-      { merge: true }
-    );
-    setUser((actual) => ({ ...actual, fotoPerfil }));
+    setOperacion("Actualizando tu foto de perfil…");
+    try {
+      await setDoc(
+        doc(db, "fotos_perfil", user.dni),
+        { fotoPerfil },
+        { merge: true }
+      );
+      setUser((actual) => ({ ...actual, fotoPerfil }));
+    } finally {
+      setOperacion("");
+    }
   };
 
   // Solo registra pacientes (el resto de roles los carga la administración)
   const registrar = async ({ dni, nombre, apellido, email, contrasena }) => {
     const emailNorm = email.trim().toLowerCase();
     registrando.current = true;
+    setOperacion("Creando tu cuenta…");
     let cuentaCreada = null;
     try {
       const cred = await createUserWithEmailAndPassword(auth, emailNorm, contrasena);
@@ -209,12 +223,18 @@ export function AuthProvider({ children }) {
       return { ok: false, error: "No se pudo crear la cuenta. Probá de nuevo." };
     } finally {
       registrando.current = false;
+      setOperacion("");
     }
   };
 
   const logout = async () => {
-    await signOut(auth);
-    setUser(null);
+    setOperacion("Cerrando tu sesión…");
+    try {
+      await signOut(auth);
+      setUser(null);
+    } finally {
+      setOperacion("");
+    }
   };
 
   return (
@@ -222,6 +242,11 @@ export function AuthProvider({ children }) {
       user, login, logout, registrar, recuperarContrasena, actualizarFotoPerfil,
     }}>
       {!cargando && children}
+      {(cargando || operacion) && (
+        <PantallaCarga
+          mensaje={cargando ? "Conectando con tu espacio seguro…" : operacion}
+        />
+      )}
     </AuthContext.Provider>
   );
 }
