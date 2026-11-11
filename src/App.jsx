@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 // Header único
 import Nav from "./componentes/Nav.jsx";
+import ScrollToTop from "./componentes/ScrollToTop.jsx";
 
 // Layout del menú lateral + guardas de acceso
 import DashboardLayout from "./componentes/DashboardLayout.jsx";
@@ -53,6 +54,7 @@ function App() {
   return (
     <>
       <Nav />
+      <ScrollToTop />
 
       <Routes>
         {/* Públicas (se ven con o sin sesión) */}
