@@ -33,6 +33,21 @@
   object-fit: cover;
 }
 
+.registro-booking-progress {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f0efec;
+  border-left: 4px solid #52677d;
+}
+
+.registro-booking-progress > p {
+  margin: 0 0 0.85rem;
+  color: #1c2e4a;
+  font-family: var(--font-display, "Sora", system-ui, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .registro-box h1 {
   text-align: center;
   color: #1c2e4a;

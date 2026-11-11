@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
+import BookingProgress from "../componentes/BookingProgress.jsx";
 import logo from "../assets/Logotipo.jpeg";
 import "../estilos/Login.css";
 
@@ -10,7 +11,9 @@ export default function Login() {
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
   const { login } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const flujoReserva = location.state?.bookingFlow === true;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +23,10 @@ export default function Login() {
     setCargando(false);
     if (!res.ok) {
       setError(res.error);
+      return;
+    }
+    if (flujoReserva && res.rol === "paciente") {
+      navigate("/paciente/turnos", { replace: true, state: { bookingFlow: true } });
       return;
     }
     navigate(ROLE_HOME[res.rol]);
@@ -47,6 +54,12 @@ export default function Login() {
             <img src={logo} alt="Clínica B.A.L.A." />
           </Link>
 
+          {flujoReserva && (
+            <div className="auth-booking-progress">
+              <p>Un paso más para gestionar tu turno</p>
+              <BookingProgress step={2} />
+            </div>
+          )}
           <h1 className="auth-title mb-2">Bienvenido de nuevo</h1>
           <p className="auth-sub mb-4">
             Ingresá tu DNI o correo electrónico y contraseña para acceder a tu cuenta.
@@ -102,7 +115,7 @@ export default function Login() {
 
   <p className="text-center mb-0 small">
     ¿No tenés cuenta todavía?{" "}
-    <Link to="/registro" className="auth-link fw-semibold">
+    <Link to="/registro" state={location.state} className="auth-link fw-semibold">
       Registrate
     </Link>
   </p>

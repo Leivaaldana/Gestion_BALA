@@ -1,6 +1,6 @@
 import {
-  collection, doc, getDocs, onSnapshot, query,
-  runTransaction, serverTimestamp, updateDoc, where,
+  collection, doc, getDocs, onSnapshot, query, runTransaction,
+  serverTimestamp, updateDoc, where, writeBatch,
 } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -22,25 +22,62 @@ export async function listarMedicos() {
 
 export async function horariosOcupados(medicoDni, fecha) {
   const snap = await getDocs(
-    query(collection(db, "turnos"), where("medicoDni", "==", medicoDni), where("fecha", "==", fecha))
+    query(
+      collection(db, "disponibilidad_turnos"),
+      where("medicoDni", "==", medicoDni),
+      where("fecha", "==", fecha)
+    )
   );
-  return snap.docs.map((d) => d.data()).filter((t) => t.estado !== "Cancelado").map((t) => t.hora);
+  return snap.docs
+    .map((d) => d.data())
+    .filter((slot) => slot.estado === "Ocupado")
+    .map((slot) => slot.hora);
 }
 
 // Lanza Error("OCUPADO") si ese médico ya tiene un turno activo a esa hora
 export async function reservarTurno(t) {
-  const ref = doc(db, "turnos", `${t.medicoDni}_${t.fecha}_${t.hora.replace(":", "")}`);
+  const id = `${t.medicoDni}_${t.fecha}_${t.hora.replace(":", "")}`;
+  const turnoRef = doc(db, "turnos", id);
+  const disponibilidadRef = doc(db, "disponibilidad_turnos", id);
   await runTransaction(db, async (tx) => {
-    const snap = await tx.get(ref);
-    if (snap.exists() && snap.data().estado !== "Cancelado") throw new Error("OCUPADO");
-    tx.set(ref, { ...t, estado: "Pendiente", creadoEn: serverTimestamp() });
+    const slot = await tx.get(disponibilidadRef);
+    if (slot.exists() && slot.data().estado === "Ocupado") throw new Error("OCUPADO");
+    tx.set(turnoRef, { ...t, estado: "Pendiente", creadoEn: serverTimestamp() });
+    tx.set(disponibilidadRef, {
+      medicoDni: t.medicoDni,
+      fecha: t.fecha,
+      hora: t.hora,
+      estado: "Ocupado",
+    });
   });
 }
 
-// Tiempo real. Sin filtro trae todos; con filtro { campo, valor } solo los que coinciden.
-export function escucharTurnos(callback, filtro, onError) {
+export async function sincronizarDisponibilidad(turnos) {
+  const activos = turnos.filter(
+    (turno) => turno.estado === "Pendiente" || turno.estado === "Confirmado"
+  );
+  for (let inicio = 0; inicio < activos.length; inicio += 450) {
+    const batch = writeBatch(db);
+    activos.slice(inicio, inicio + 450).forEach((turno) => {
+      const id = `${turno.medicoDni}_${turno.fecha}_${turno.hora.replace(":", "")}`;
+      batch.set(doc(db, "disponibilidad_turnos", id), {
+        medicoDni: turno.medicoDni,
+        fecha: turno.fecha,
+        hora: turno.hora,
+        estado: "Ocupado",
+      });
+    });
+    await batch.commit();
+  }
+}
+
+// Tiempo real. Sin filtros trae todos; cada filtro usa { campo, valor }.
+export function escucharTurnos(callback, filtros = [], onError) {
   const base = collection(db, "turnos");
-  const q = filtro ? query(base, where(filtro.campo, "==", filtro.valor)) : base;
+  const clausulas = (Array.isArray(filtros) ? filtros : [filtros])
+    .filter(Boolean)
+    .map(({ campo, valor }) => where(campo, "==", valor));
+  const q = clausulas.length ? query(base, ...clausulas) : base;
   return onSnapshot(
     q,
     (snap) => {
@@ -52,5 +89,20 @@ export function escucharTurnos(callback, filtro, onError) {
   );
 }
 
-export const cambiarEstadoTurno = (id, estado) =>
-  updateDoc(doc(db, "turnos", id), { estado });
+export async function cambiarEstadoTurno(id, estado) {
+  const turnoRef = doc(db, "turnos", id);
+  if (estado !== "Cancelado") {
+    await updateDoc(turnoRef, { estado });
+    return;
+  }
+
+  const disponibilidadRef = doc(db, "disponibilidad_turnos", id);
+  await runTransaction(db, async (tx) => {
+    const turno = await tx.get(turnoRef);
+    const slot = await tx.get(disponibilidadRef);
+    if (!turno.exists()) throw new Error("TURNO_INEXISTENTE");
+
+    tx.update(turnoRef, { estado });
+    if (slot.exists()) tx.update(disponibilidadRef, { estado: "Disponible" });
+  });
+}

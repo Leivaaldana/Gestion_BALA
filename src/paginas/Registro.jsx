@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth, ROLE_HOME } from "../context/AuthContext";
+import BookingProgress from "../componentes/BookingProgress.jsx";
 import logo from "../assets/Logotipo.jpeg";
 import "../estilos/Registro.css";
 
@@ -9,7 +10,9 @@ const FORMATO_EMAIL = /^\S+@\S+\.\S+$/;
 
 function FormularioRegistro() {
   const { registrar } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const flujoReserva = location.state?.bookingFlow === true;
 
   const [datos, setDatos] = useState({
     dni: "",
@@ -77,6 +80,10 @@ function FormularioRegistro() {
     return;
   }
 
+  if (flujoReserva && res.rol === "paciente") {
+    navigate("/paciente/turnos", { replace: true, state: { bookingFlow: true } });
+    return;
+  }
   navigate(ROLE_HOME[res.rol]);
 };
 
@@ -86,6 +93,12 @@ function FormularioRegistro() {
         <Link to="/" className="registro-logo" aria-label="Volver al inicio">
           <img src={logo} alt="Clínica B.A.L.A." />
         </Link>
+        {flujoReserva && (
+          <div className="registro-booking-progress">
+            <p>Creá tu cuenta y enseguida vas a poder reservar</p>
+            <BookingProgress step={2} />
+          </div>
+        )}
         <h1>Crear una cuenta</h1>
 
         <p className="subtitulo">Registrate para acceder a Clínica B.A.L.A</p>

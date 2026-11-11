@@ -1,7 +1,23 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import BookingProgress from "../componentes/BookingProgress.jsx";
 import "../estilos/Principal.css";
 
 export default function Principal() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [mostrarProgreso, setMostrarProgreso] = useState(false);
+
+  const iniciarReserva = () => {
+    if (user) {
+      navigate("/paciente/turnos", { state: { bookingFlow: true } });
+      return;
+    }
+
+    setMostrarProgreso(true);
+  };
+
   return (
     <div className="home">
       <section className="hero py-5">
@@ -19,14 +35,29 @@ export default function Principal() {
                 personal administrativo.
               </p>
               <div className="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap">
-                {/* Sin sesión, la ruta protegida lo lleva al login */}
-                <Link className="btn btn-dusty btn-lg BotonP" to="/paciente/turnos">
+                <button className="btn btn-dusty btn-lg BotonP" type="button" onClick={iniciarReserva}>
                   Reservar un turno
-                </Link>
+                </button>
                 <Link className="btn btn-outline-ivory btn-lg BotonP" to="/equipo">
                   Conocé al equipo
                 </Link>
               </div>
+              {mostrarProgreso && !user && (
+                <section className="booking-nudge" aria-live="polite">
+                  <div className="booking-nudge__heading">
+                    <span className="booking-nudge__eyebrow">TU PRÓXIMO PASO</span>
+                    <p>Ya casi estamos: iniciá sesión y vas a poder elegir tu turno.</p>
+                  </div>
+                  <BookingProgress step={2} />
+                  <Link
+                    className="booking-nudge__action"
+                    to="/login"
+                    state={{ bookingFlow: true }}
+                  >
+                    Iniciar sesión <span aria-hidden="true">↗</span>
+                  </Link>
+                </section>
+              )}
             </div>
 
             <div className="col-lg-6">

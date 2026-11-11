@@ -1,0 +1,129 @@
+.booking-progress {
+  width: 100%;
+}
+
+.booking-progress__meter {
+  height: 4px;
+  margin-bottom: 0.9rem;
+  overflow: hidden;
+  background: rgba(15, 26, 43, 0.14);
+}
+
+.booking-progress__meter span {
+  display: block;
+  height: 100%;
+  background: #52677d;
+  transition: width 0.35s ease;
+}
+
+.booking-progress__steps {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-progress__step {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #52677d;
+  font: 700 0.65rem/1.35 var(--font-mono, "Space Mono", monospace);
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+}
+
+.booking-progress__step.is-current,
+.booking-progress__step.is-complete {
+  color: #1c2e4a;
+  opacity: 1;
+}
+
+.booking-progress__number {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 1.65rem;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.booking-destination {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.8fr);
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  color: #fff;
+  background: #1c2e4a;
+  border-left: 5px solid #52677d;
+}
+
+.booking-destination__eyebrow {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #bdc4d4;
+  font: 700 0.65rem/1.3 var(--font-mono, "Space Mono", monospace);
+  letter-spacing: 0.12em;
+}
+
+.booking-destination h2 {
+  margin: 0 0 0.4rem;
+  font: 700 clamp(1.2rem, 2.5vw, 1.7rem)/1.2 var(--font-display, "Sora", sans-serif);
+}
+
+.booking-destination p {
+  margin: 0;
+  color: #bdc4d4;
+  line-height: 1.5;
+}
+
+.booking-destination .booking-progress__meter {
+  background: rgba(189, 196, 212, 0.28);
+}
+
+.booking-destination .booking-progress__meter span {
+  background: #bdc4d4;
+}
+
+.booking-destination .booking-progress__step {
+  color: #bdc4d4;
+}
+
+.booking-destination .booking-progress__step.is-current,
+.booking-destination .booking-progress__step.is-complete {
+  color: #fff;
+}
+
+.booking-destination.is-complete {
+  background: #52677d;
+  border-left-color: #bdc4d4;
+}
+
+@media (max-width: 575.98px) {
+  .booking-progress__steps {
+    gap: 0.35rem;
+  }
+
+  .booking-progress__step {
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 0.58rem;
+  }
+
+  .booking-destination {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-progress__meter span {
+    transition: none;
+  }
+}

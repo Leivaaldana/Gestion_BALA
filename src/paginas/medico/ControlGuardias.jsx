@@ -18,8 +18,11 @@ export default function ControlGuardias() {
   const [cola, setCola] = useState([]);
 
   useEffect(
-    () => escucharTurnos(setTurnos, { campo: "medicoDni", valor: user.dni }),
-    [user.dni]
+    () => escucharTurnos(setTurnos, [
+      { campo: "medicoDni", valor: user.dni },
+      { campo: "medicoEmail", valor: user.email },
+    ]),
+    [user.dni, user.email]
   );
   useEffect(() => escucharGuardia(setCola), []);
 
