@@ -1,16 +1,41 @@
-# React + Vite
+# Gestion BALA
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplicación React con Vite, Firebase y EmailJS.
 
-Currently, two official plugins are available:
+## Desarrollo local
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Instalá Node.js y npm.
+2. Instalá las dependencias:
 
-## React Compiler
+   ```sh
+   npm install
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+3. Copiá `.env.example` a `.env.local` y completá las variables de Firebase y EmailJS.
+4. Iniciá el servidor:
 
-## Expanding the Oxlint configuration
+   ```sh
+   npm run dev
+   ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Despliegue en Vercel
+
+1. Importá el repositorio en Vercel y dejá el directorio raíz como directorio del proyecto.
+2. Configurá:
+   - Framework Preset: **Vite**
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+3. En **Settings → Environment Variables**, agregá las variables de `.env.example` para cada entorno en el que se vaya a desplegar.
+4. Desplegá el proyecto. `vercel.json` configura el fallback de las rutas de React Router para que funcionen también al abrir o recargar una ruta interna.
+
+Las variables `VITE_*` se incorporan al bundle del navegador; no guardes secretos privados en ellas. La configuración web de Firebase y la clave pública de EmailJS son valores de cliente.
+
+Después del primer despliegue, agregá el dominio de Vercel a los dominios autorizados de Firebase Authentication. Si usás el envío de correos con EmailJS, autorizá también el dominio en la configuración de EmailJS.
+
+## Comandos
+
+- `npm run dev`: servidor de desarrollo.
+- `npm run build`: compilación de producción en `dist`.
+- `npm run preview`: vista previa local de la compilación.
+- `npm run lint`: análisis estático.

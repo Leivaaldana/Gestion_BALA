@@ -27,13 +27,17 @@ export function escucharHistorial(dni, callback) {
   );
 }
 
-export function escucharConsultas(pacienteDni, callback) {
+export function escucharConsultas(pacienteDni, callback, onError) {
   const q = query(collection(db, "consultas"), where("pacienteDni", "==", pacienteDni));
-  return onSnapshot(q, (snap) => {
-    const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    lista.sort((a, b) => b.fecha.localeCompare(a.fecha));
-    callback(lista);
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      lista.sort((a, b) => b.fecha.localeCompare(a.fecha));
+      callback(lista);
+    },
+    onError
+  );
 }
 
 export const registrarConsulta = (c) =>
